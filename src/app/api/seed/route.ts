@@ -15,7 +15,7 @@ import {
 } from '@/lib/models';
 import { hashPassword } from '@/lib/auth';
 
-export async function POST() {
+async function handleSeed() {
   try {
     await connectToDatabase();
 
@@ -194,3 +194,12 @@ export async function POST() {
     );
   }
 }
+
+export async function GET() {
+  return handleSeed();
+}
+
+export async function POST() {
+  return handleSeed();
+}
+
