@@ -19,13 +19,15 @@ import {
 interface CreateEventFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onEventCreated: (newEvent: any) => void;
+  onEventCreated?: (newEvent: any) => void;
+  onSuccess?: (newEvent: any) => void;
 }
 
 export default function CreateEventFormModal({
   isOpen,
   onClose,
   onEventCreated,
+  onSuccess,
 }: CreateEventFormModalProps) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -121,7 +123,8 @@ export default function CreateEventFormModal({
         return;
       }
 
-      onEventCreated(data.data);
+      if (onSuccess) onSuccess(data.data);
+      if (onEventCreated) onEventCreated(data.data);
       onClose();
     } catch (err: any) {
       setError(err.message || 'Error occurred');

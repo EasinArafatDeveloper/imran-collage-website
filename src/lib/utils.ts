@@ -80,7 +80,20 @@ export function decodeQrPayload(token: string): { code: string; sid: string; eid
   }
 }
 
-export function exportToCSV(filename: string, rows: Record<string, any>[]): void {
+export function exportToCSV(arg1: string | Record<string, any>[], arg2?: Record<string, any>[] | string): void {
+  let filename = 'export.csv';
+  let rows: Record<string, any>[] = [];
+
+  if (typeof arg1 === 'string' && Array.isArray(arg2)) {
+    filename = arg1;
+    rows = arg2;
+  } else if (Array.isArray(arg1) && typeof arg2 === 'string') {
+    rows = arg1;
+    filename = arg2;
+  } else if (Array.isArray(arg1)) {
+    rows = arg1;
+  }
+
   if (!rows || !rows.length) return;
   const headers = Object.keys(rows[0]);
   const csvContent = [
@@ -105,3 +118,4 @@ export function exportToCSV(filename: string, rows: Record<string, any>[]): void
   link.click();
   document.body.removeChild(link);
 }
+

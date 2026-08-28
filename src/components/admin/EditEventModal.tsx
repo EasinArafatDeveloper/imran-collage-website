@@ -74,7 +74,7 @@ export default function EditEventModal({
       setCoverImage(event.coverImage || '');
       setDescription(event.description || '');
       setStatus((event.status as any) || 'published');
-      setTags(event.tags ? event.tags.join(', ') : '');
+      setTags(event.tags && Array.isArray(event.tags) ? event.tags.join(', ') : '');
       setError('');
     }
   }, [event]);

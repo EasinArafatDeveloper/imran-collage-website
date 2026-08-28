@@ -89,6 +89,7 @@ export interface IEvent {
   agenda: IAgendaItem[];
   requirements?: string[];
   rules?: string[];
+  tags?: string[];
   faq?: { question: string; answer: string }[];
   featured?: boolean;
   createdAt: string;
