@@ -78,7 +78,7 @@ export default function EventCard({
                   : 'bg-emerald-500 text-white shadow-md'
               }`}
             >
-              {event.registrationFee > 0 ? `৳ ${event.registrationFee}` : 'বিনামূল্যে (Free)'}
+              {event.registrationFee > 0 ? `৳ ${event.registrationFee}` : 'Free'}
             </span>
             {event.eventType && (
               <span className="text-[10px] bg-black/70 text-slate-300 px-2 py-0.5 rounded-full capitalize">
@@ -111,7 +111,7 @@ export default function EventCard({
             </div>
             <div className="flex items-center gap-2 truncate text-[11px]">
               <Users className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span className="truncate">আয়োজক: {event.clubName || event.organizerName}</span>
+              <span className="truncate">Organizer: {event.clubName || event.organizerName}</span>
             </div>
           </div>
         </div>
@@ -122,9 +122,9 @@ export default function EventCard({
         {/* Capacity Bar */}
         <div>
           <div className="flex justify-between text-[10px] text-slate-500 dark:text-slate-400 mb-1">
-            <span>আসন পূর্ণ: {progressPercent}%</span>
+            <span>Filled: {progressPercent}%</span>
             <span className={isFull ? 'text-amber-500 font-bold' : 'text-slate-400'}>
-              {isFull ? 'আসন সংখ্যা পূর্ণ' : `${seatsLeft} টি আসন বাকি`}
+              {isFull ? 'House Full' : `${seatsLeft} seats left`}
             </span>
           </div>
           <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -151,7 +151,7 @@ export default function EventCard({
             className="w-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5"
           >
             <CheckCircle2 className="w-4 h-4" />
-            এনরোল করা আছে
+            Enrolled
           </button>
         ) : (
           <button

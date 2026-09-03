@@ -104,14 +104,14 @@ export default function DigitalCertificate({ certificate, onClose }: DigitalCert
           className="bg-slate-800 hover:bg-slate-700 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 border border-slate-700 shadow-md"
         >
           <Printer className="w-4 h-4 text-amber-400" />
-          <span>সার্টিফিকেট প্রিন্ট / PDF ডাউনলোড</span>
+          <span>Print Certificate / Save PDF</span>
         </button>
         {onClose && (
           <button
             onClick={onClose}
             className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-md"
           >
-            বন্ধ করুন
+            Close
           </button>
         )}
       </div>

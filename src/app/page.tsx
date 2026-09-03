@@ -77,6 +77,15 @@ export default function HomePage() {
   const [feedbackRating, setFeedbackRating] = useState(5);
   const [feedbackComment, setFeedbackComment] = useState('');
   const [feedbackSuccess, setFeedbackSuccess] = useState('');
+  const [isVideoReady, setIsVideoReady] = useState(false);
+  const heroVideoRef = React.useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (heroVideoRef.current) {
+      heroVideoRef.current.muted = true;
+      heroVideoRef.current.play().catch(() => {});
+    }
+  }, [settings.heroVideoUrl, settings.heroBgType]);
 
   // Fetch real data from MongoDB APIs
   const fetchData = async () => {
@@ -181,7 +190,7 @@ export default function HomePage() {
       });
       const data = await res.json();
       if (data.success) {
-        setFeedbackSuccess('আপনার মূল্যবান মতামতের জন্য ধন্যবাদ!');
+        setFeedbackSuccess('Thank you for your valuable feedback!');
         setTimeout(() => {
           setFeedbackSuccess('');
           setFeedbackEvent(null);
@@ -225,71 +234,111 @@ export default function HomePage() {
         {/* ================= 01. DASHBOARD / HOME PAGE ================= */}
         {activeTab === 'home' && (
           <div className="space-y-12 animate-fade-in">
-            {/* Hero Banner */}
-            <div className="relative bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 border border-slate-800 rounded-3xl p-8 md:p-12 overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl">
-              <div className="absolute top-0 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+            {/* Hero Banner with Looping Video Background */}
+            <div className="relative rounded-3xl overflow-hidden border border-slate-800/80 shadow-2xl min-h-[440px] md:min-h-[500px] flex items-center justify-center p-6 sm:p-10 md:p-16 text-center bg-gradient-to-br from-slate-950 via-purple-950/70 to-slate-950 group">
+              {/* Background Video Layer */}
+              {(settings.heroBgType || 'video') === 'video' && (
+                <video
+                  ref={heroVideoRef}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  onLoadedData={() => setIsVideoReady(true)}
+                  onCanPlay={() => setIsVideoReady(true)}
+                  onPlaying={() => setIsVideoReady(true)}
+                  className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-700 ease-in-out ${
+                    isVideoReady ? '' : 'opacity-0'
+                  }`}
+                  style={{
+                    opacity: isVideoReady ? (settings.heroVideoOpacity ?? 75) / 100 : 0,
+                    filter: settings.heroVideoBlur ? `blur(${settings.heroVideoBlur}px)` : undefined,
+                  }}
+                  src={
+                    settings.heroVideoUrl ||
+                    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+                  }
+                />
+              )}
 
-              <div className="space-y-5 max-w-xl z-10">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-bold uppercase tracking-widest text-pink-400 px-3 py-1 bg-pink-500/10 rounded-full border border-pink-500/20 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    {settings.heroBadgeText || 'স্বাগতম! University Event Hub'}
+              {/* Dynamic Overlay Darkness (Controllable from Admin) */}
+              <div
+                className="absolute inset-0 bg-slate-950 pointer-events-none transition-opacity duration-300"
+                style={{
+                  opacity: ((settings.heroOverlayDarkness ?? 45) / 100) * 0.8,
+                }}
+              />
+
+              {/* Atmospheric Gradient Layers & Light Accents */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-purple-950/30 to-slate-950/70 pointer-events-none" />
+              <div className="absolute top-0 right-1/4 w-96 h-96 bg-pink-500/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
+              <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Center Content */}
+              <div className="relative z-10 max-w-3xl mx-auto space-y-6 flex flex-col items-center">
+                {/* Top Badge */}
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-500/15 border border-pink-500/30 backdrop-blur-md shadow-lg shadow-pink-500/10">
+                  <Sparkles className="w-4 h-4 text-pink-400 animate-spin-slow" />
+                  <span className="text-xs font-bold uppercase tracking-widest text-pink-300">
+                    {settings.heroBadgeText || 'Welcome! University Event Hub'}
                   </span>
                 </div>
 
-                <h1 className="text-3xl md:text-5xl font-extrabold leading-tight text-white">
-                  {settings.heroTitle || 'আমার অনুষ্ঠানে আপনাকে স্বাগতম'}
+                {/* Main Heading */}
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.15] tracking-tight drop-shadow-md">
+                  {settings.heroHighlightedWord && settings.heroTitle?.includes(settings.heroHighlightedWord) ? (
+                    <>
+                      {settings.heroTitle.split(settings.heroHighlightedWord)[0]}
+                      <span className="bg-gradient-to-r from-pink-400 via-rose-300 to-purple-400 bg-clip-text text-transparent underline decoration-pink-500/40 decoration-wavy decoration-2 underline-offset-8">
+                        {settings.heroHighlightedWord}
+                      </span>
+                      {settings.heroTitle.split(settings.heroHighlightedWord).slice(1).join(settings.heroHighlightedWord)}
+                    </>
+                  ) : (
+                    settings.heroTitle || 'Welcome to Campus Events Hub'
+                  )}
                 </h1>
 
-                <p className="text-slate-300 text-xs md:text-sm leading-relaxed">
-                  {settings.heroSubtitle || 'বিশ্ববিদ্যালয়ের সকল টেক ফেস্ট, সাংস্কৃতিক সন্ধ্যা, প্রতিযোগিতা, সেমিনার ও উৎসবের জন্য আধুনিক প্ল্যাটফর্ম। এখনই রেজিস্ট্রেশন করে আপনার ডিজিটাল কিউআর পাস সংগ্রহ করুন।'}
+                {/* Subtitle */}
+                <p className="text-slate-200 text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl mx-auto font-medium drop-shadow px-2">
+                  {settings.heroSubtitle ||
+                    'A state-of-the-art platform for all university tech fests, cultural nights, sports tournaments, seminars, and workshops. Register today to grab your digital QR pass.'}
                 </p>
 
-                <div className="flex flex-wrap gap-3 pt-2">
+                {/* Call-to-action Action Buttons */}
+                <div className="flex flex-wrap justify-center items-center gap-3.5 pt-2">
                   <button
                     onClick={() => setActiveTab('events')}
-                    className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-6 py-3 rounded-2xl font-bold text-xs shadow-lg shadow-pink-500/30 transition flex items-center gap-2"
+                    className="group bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-7 py-3.5 rounded-2xl font-bold text-xs sm:text-sm shadow-xl shadow-pink-500/25 transition-all transform hover:-translate-y-0.5 flex items-center gap-2"
                   >
-                    <span>{settings.heroPrimaryBtnText || 'সকল ইভেন্ট দেখুন'}</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span>{settings.heroPrimaryBtnText || 'Explore All Events'}</span>
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
+
                   <button
                     onClick={() => setActiveTab('moments')}
-                    className="bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-200 px-6 py-3 rounded-2xl font-semibold text-xs transition flex items-center gap-2"
+                    className="bg-slate-900/80 hover:bg-slate-800 border border-slate-700/80 backdrop-blur-md text-slate-200 px-6 py-3.5 rounded-2xl font-semibold text-xs sm:text-sm transition flex items-center gap-2 hover:border-slate-600 shadow-lg"
                   >
                     <ImageIcon className="w-4 h-4 text-pink-400" />
-                    <span>{settings.heroSecondaryBtnText || 'ক্যাম্পাস স্মৃতি দেখুন'}</span>
+                    <span>{settings.heroSecondaryBtnText || 'Campus Moments'}</span>
                   </button>
-                  {user?.role === 'admin' && (
-                    <a
-                      href="/admin"
-                      className="bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 px-5 py-3 rounded-2xl font-semibold text-xs transition flex items-center gap-1.5"
-                    >
-                      <ShieldCheck className="w-4 h-4 text-purple-400" />
-                      <span>এডমিন প্যানেল (/admin)</span>
-                    </a>
-                  )}
                 </div>
-              </div>
 
-              {/* Hero Image Showcase */}
-              <div className="w-full md:w-1/2 rounded-2xl overflow-hidden border border-slate-700/60 shadow-2xl relative group">
-                <img
-                  src={events[0]?.coverImage || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80'}
-                  alt="University Event Hero"
-                  className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
-                  <span className="text-[10px] text-pink-400 font-bold uppercase tracking-wider">
-                    {events[0]?.category || 'Flagship Event Spotlight'}
-                  </span>
-                  <h3 className="text-base font-bold text-white">
-                    {events[0]?.title || 'National University Tech Fest 2026'}
-                  </h3>
-                  <p className="text-xs text-slate-300 mt-0.5">
-                    {events[0]?.venue || 'University Central Auditorium'} • {events[0]?.capacity || 250} টি সীট
-                  </p>
+                {/* Micro Quick Highlights */}
+                <div className="pt-4 flex flex-wrap justify-center items-center gap-4 sm:gap-6 text-[11px] font-semibold text-slate-300">
+                  <div className="flex items-center gap-1.5 bg-slate-900/60 backdrop-blur-md px-3 py-1 rounded-full border border-slate-800">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>{events.length}+ Live Events</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-slate-900/60 backdrop-blur-md px-3 py-1 rounded-full border border-slate-800">
+                    <QrCode className="w-3 h-3 text-pink-400" />
+                    <span>100% Digital QR Pass</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-slate-900/60 backdrop-blur-md px-3 py-1 rounded-full border border-slate-800">
+                    <Award className="w-3 h-3 text-purple-400" />
+                    <span>Auto-Verified Certificates</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -300,17 +349,17 @@ export default function HomePage() {
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <Calendar className="w-5 h-5 text-pink-500" />
-                    চলতি ও আসন্ন ইভেন্টসমূহ
+                    Upcoming & Featured Events
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    বিশ্ববিদ্যালয়ের অনুমোদিত ও সক্রিয় অনুষ্ঠানসমূহ
+                    Officially sanctioned and active campus events
                   </p>
                 </div>
                 <button
                   onClick={() => setActiveTab('events')}
                   className="text-xs text-pink-600 dark:text-pink-400 font-bold hover:underline flex items-center gap-1.5 bg-pink-500/10 hover:bg-pink-500/20 px-3.5 py-1.5 rounded-xl border border-pink-500/20 transition"
                 >
-                  <span>সবগুলো দেখুন</span>
+                  <span>See All Events</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -318,11 +367,11 @@ export default function HomePage() {
               {loading ? (
                 <div className="py-12 text-center text-slate-500 flex flex-col items-center gap-2">
                   <div className="w-7 h-7 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-xs">ইভেন্টগুলো লোড হচ্ছে...</span>
+                  <span className="text-xs">Loading events...</span>
                 </div>
               ) : events.length === 0 ? (
                 <div className="glass-card p-8 text-center text-slate-400 text-xs">
-                  বর্তমানে কোনো সক্রিয় ইভেন্ট নেই।
+                  No active events currently available.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -345,24 +394,24 @@ export default function HomePage() {
                 <div>
                   <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <ImageIcon className="w-5 h-5 text-pink-500" />
-                    ক্যাম্পাস স্মৃতি ও ফটো গ্যালারি
+                    Campus Moments & Photo Gallery
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    বিশ্ববিদ্যালয়ের বিভিন্ন আয়োজন, ফেস্ট ও উৎসবের স্মরণীয় মুহূর্ত
+                    Memorable moments from fests, celebrations, and campus life
                   </p>
                 </div>
                 <button
                   onClick={() => setActiveTab('moments')}
                   className="text-xs text-pink-600 dark:text-pink-400 font-bold hover:underline flex items-center gap-1.5 bg-pink-500/10 hover:bg-pink-500/20 px-3.5 py-1.5 rounded-xl border border-pink-500/20 transition"
                 >
-                  <span>সকল ছবি দেখুন (See All)</span>
+                  <span>See All Photos</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
 
               {galleryPhotos.length === 0 ? (
                 <div className="glass-card p-8 text-center text-slate-400 text-xs">
-                  বর্তমানে কোনো ছবি গ্যালারিতে যুক্ত নেই। এডমিন প্যানেল থেকে ছবি যুক্ত করুন।
+                  No gallery photos added yet. Upload photos from the Admin Panel.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -411,12 +460,12 @@ export default function HomePage() {
                   <Film className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">স্মৃতি গ্যালারি</h3>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">Moments Gallery</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    পূর্বের সকল স্মরণীয় ছবি ও মুহূর্ত দেখুন
+                    Explore past photographs and event recaps
                   </p>
                 </div>
-                <span className="text-xs text-pink-500 font-bold block pt-2">গ্যালারি খুলুন &rarr;</span>
+                <span className="text-xs text-pink-500 font-bold block pt-2">Open Gallery &rarr;</span>
               </div>
 
               <a
@@ -427,12 +476,12 @@ export default function HomePage() {
                   <ShieldCheck className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">এডমিন প্যানেল</h3>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">Admin Control</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    ইভেন্ট তৈরি, এডিট ও ইউজার কন্ট্রোল
+                    Manage events, registrations and approvals
                   </p>
                 </div>
-                <span className="text-xs text-purple-500 font-bold block pt-2">/admin এ যান &rarr;</span>
+                <span className="text-xs text-purple-500 font-bold block pt-2">Go to /admin &rarr;</span>
               </a>
 
               <div
@@ -443,12 +492,12 @@ export default function HomePage() {
                   <Users className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">এনরোল্ড শিক্ষার্থী</h3>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">Enrolled Directory</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    নিবন্ধিত সকল শিক্ষার্থীর তালিকা
+                    Live list of all registered student attendees
                   </p>
                 </div>
-                <span className="text-xs text-indigo-500 font-bold block pt-2">তালিকা দেখুন &rarr;</span>
+                <span className="text-xs text-indigo-500 font-bold block pt-2">View Directory &rarr;</span>
               </div>
 
               <div
@@ -465,12 +514,12 @@ export default function HomePage() {
                   <QrCode className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">লাইভ কিউআর স্ক্যানার</h3>
+                  <h3 className="font-bold text-sm text-slate-900 dark:text-white">Live QR Scanner</h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                    গেটে লাইভ কিউআর স্ক্যান ও উপস্থিতি
+                    Gate check-in and attendance verification
                   </p>
                 </div>
-                <span className="text-xs text-emerald-500 font-bold block pt-2">স্ক্যানার খুলুন &rarr;</span>
+                <span className="text-xs text-emerald-500 font-bold block pt-2">Open Scanner &rarr;</span>
               </div>
             </div>
           </div>
@@ -481,9 +530,9 @@ export default function HomePage() {
           <div className="space-y-8 animate-fade-in">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">বিশ্ববিদ্যালয় ইভেন্ট সমূহ</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">University Campus Events</h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  সকল একাডেমিক, টেকনিক্যাল ও সাংস্কৃতিক অনুষ্ঠানের বিস্তারিত তালিকা
+                  Comprehensive listing of all academic, tech, cultural, and sporting events
                 </p>
               </div>
 
@@ -493,7 +542,7 @@ export default function HomePage() {
                   className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white px-5 py-2.5 rounded-xl font-bold text-xs shadow-lg shadow-pink-500/25 transition flex items-center gap-2"
                 >
                   <Plus className="w-4 h-4" />
-                  নতুন ইভেন্ট তৈরি করুন
+                  Create New Event
                 </button>
               )}
             </div>
@@ -517,9 +566,9 @@ export default function HomePage() {
             {filteredEvents.length === 0 ? (
               <div className="glass-card p-12 text-center text-slate-400 space-y-3">
                 <Calendar className="w-12 h-12 mx-auto opacity-30 text-pink-500" />
-                <h3 className="font-bold text-base text-slate-800 dark:text-slate-200">কোনো ইভেন্ট পাওয়া যায়নি</h3>
+                <h3 className="font-bold text-base text-slate-800 dark:text-slate-200">No Events Found</h3>
                 <p className="text-xs max-w-sm mx-auto">
-                  আপনার নির্বাচিত ফিল্টারের সাথে মিলে এমন কোনো ইভেন্ট নেই।
+                  No events currently match your selected filters and search query.
                 </p>
               </div>
             ) : (
@@ -543,9 +592,9 @@ export default function HomePage() {
           <div className="space-y-8 animate-fade-in">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">ক্যাম্পাস স্মৃতি ও ফটো গ্যালারি</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Campus Moments & Photo Gallery</h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  বিশ্ববিদ্যালয়ের সকল স্মরণীয় মুহূর্ত ও উৎসবের লাইভ গ্যালারি
+                  Live photo archive capturing unforgettable campus events and festivals
                 </p>
               </div>
 
@@ -561,7 +610,7 @@ export default function HomePage() {
                         : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300'
                     }`}
                   >
-                    {cat === 'all' ? 'সকল ছবি' : cat}
+                    {cat === 'all' ? 'All Photos' : cat}
                   </button>
                 ))}
               </div>
@@ -571,9 +620,9 @@ export default function HomePage() {
               <div className="glass-card p-12 text-center text-slate-400 space-y-3">
                 <ImageIcon className="w-12 h-12 mx-auto text-pink-500/40" />
                 <h3 className="font-bold text-base text-slate-800 dark:text-slate-200">
-                  এই ক্যাটাগরিতে কোনো ছবি পাওয়া যায়নি
+                  No photos found in this category
                 </h3>
-                <p className="text-xs">এডমিন প্যানেল থেকে নতুন ছবি আপলোড করুন।</p>
+                <p className="text-xs">Upload new moments via the Admin Panel.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -621,9 +670,9 @@ export default function HomePage() {
           <div className="space-y-8 animate-fade-in">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">বিশ্ববিদ্যালয় ক্লাব ও ফোরাম সমূহ</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">University Clubs & Forums</h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  আপনার পছন্দের ক্লাবে যুক্ত হয়ে সহ-শিক্ষা কার্যক্রমে অংশ নিন
+                  Discover student clubs and join co-curricular campus activities
                 </p>
               </div>
 
@@ -633,7 +682,7 @@ export default function HomePage() {
                   className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5"
                 >
                   <Plus className="w-4 h-4" />
-                  <span>এডমিন থেকে নতুন ক্লাব যুক্ত করুন</span>
+                  <span>Add Club from Admin</span>
                 </a>
               )}
             </div>
@@ -642,17 +691,17 @@ export default function HomePage() {
               <div className="glass-card p-12 text-center text-slate-400 space-y-3">
                 <Building2 className="w-12 h-12 mx-auto text-indigo-500/40" />
                 <h3 className="font-bold text-base text-slate-800 dark:text-slate-200">
-                  বর্তমানে কোনো সক্রিয় ক্লাব তালিকাভুক্ত নেই
+                  No clubs currently listed
                 </h3>
                 <p className="text-xs max-w-sm mx-auto text-slate-500">
-                  বিশ্ববিদ্যালয়ে নতুন ক্লাব গঠনের জন্য এডমিন প্যানেলে প্রবেশ করে ক্লাব যুক্ত করুন।
+                  Log in to the Admin Dashboard to create and register university clubs.
                 </p>
                 {user?.role === 'admin' && (
                   <a
                     href="/admin"
                     className="inline-block bg-indigo-600 text-white font-bold text-xs px-5 py-2 rounded-xl mt-2"
                   >
-                    ক্লাব তৈরি করুন
+                    Create Club
                   </a>
                 )}
               </div>
@@ -682,11 +731,11 @@ export default function HomePage() {
 
                     <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs">
                       <div>
-                        <span className="text-[10px] text-slate-400 block">ক্লাব প্রেসিডেন্ট</span>
+                        <span className="text-[10px] text-slate-400 block">Club President</span>
                         <span className="font-bold text-slate-800 dark:text-slate-200">{c.presidentName}</span>
                       </div>
                       <button
-                        onClick={() => alert(`🎉 "${c.name}" এ যুক্ত হওয়ার জন্য রিকোয়েস্ট সাবমিট করা হয়েছে!`)}
+                        onClick={() => alert(`🎉 Join request submitted for "${c.name}"!`)}
                         className="bg-pink-600 hover:bg-pink-700 text-white font-bold px-4 py-2 rounded-xl text-xs shadow-md shadow-pink-600/20 transition"
                       >
                         Join Club
@@ -704,9 +753,9 @@ export default function HomePage() {
           <div className="space-y-8 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">নিবন্ধিত শিক্ষার্থী ডিরেক্টরি</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Registered Students Directory</h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  বিশ্ববিদ্যালয়ের বিভিন্ন অনুষ্ঠানে নিবন্ধিত শিক্ষার্থীদের লাইভ তালিকা
+                  Live registry of all students enrolled across university events
                 </p>
               </div>
               <button
@@ -714,7 +763,7 @@ export default function HomePage() {
                 className="glass-card hover:border-pink-500/50 text-pink-600 dark:text-pink-400 px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5"
               >
                 <Plus className="w-3.5 h-3.5" />
-                ইভেন্টে এনরোল করুন
+                Enroll in Events
               </button>
             </div>
 
@@ -722,10 +771,10 @@ export default function HomePage() {
               <div className="glass-card p-12 text-center text-slate-400 space-y-3">
                 <Users className="w-12 h-12 mx-auto text-indigo-500/40" />
                 <h3 className="font-bold text-base text-slate-800 dark:text-slate-200">
-                  এখনও কোনো শিক্ষার্থী ইভেন্টে এনরোল করেনি
+                  No students enrolled yet
                 </h3>
                 <p className="text-xs max-w-sm mx-auto text-slate-500">
-                  ইভেন্ট পেজ থেকে পছন্দের অনুষ্ঠানে রেজিস্ট্রেশন করুন।
+                  Register for campus events from the Events page.
                 </p>
               </div>
             ) : (
@@ -733,12 +782,12 @@ export default function HomePage() {
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 uppercase font-semibold border-b border-slate-200 dark:border-slate-800">
                     <tr>
-                      <th className="p-4"># কোড</th>
-                      <th className="p-4">শিক্ষার্থীর নাম</th>
-                      <th className="p-4">স্টুডেন্ট আইডি</th>
-                      <th className="p-4">ইভেন্ট</th>
-                      <th className="p-4">ডিপার্টমেন্ট</th>
-                      <th className="p-4">স্ট্যাটাস</th>
+                      <th className="p-4"># Booking Code</th>
+                      <th className="p-4">Student Name</th>
+                      <th className="p-4">Student ID</th>
+                      <th className="p-4">Event</th>
+                      <th className="p-4">Department</th>
+                      <th className="p-4">Status</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
@@ -772,16 +821,16 @@ export default function HomePage() {
           <div className="space-y-8 animate-fade-in">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 dark:border-slate-800 pb-6">
               <div>
-                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">মাই ইভেন্টস ও ডিজিটাল পাস</h2>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white">My Events & Digital Passes</h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  আপনার নিবন্ধিত ইভেন্টের ডিজিটাল কিউআর পাস, উপস্থিতি ও সার্টিফিকেট
+                  Access your registered QR passes, attendance history, and certificates
                 </p>
               </div>
               <button
                 onClick={() => setActiveTab('events')}
                 className="bg-pink-600 hover:bg-pink-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md transition flex items-center gap-1.5"
               >
-                <Plus className="w-4 h-4" /> আরও ইভেন্টে এনরোল করুন
+                <Plus className="w-4 h-4" /> Enroll in More Events
               </button>
             </div>
 
@@ -789,16 +838,16 @@ export default function HomePage() {
               <div className="glass-card p-12 text-center space-y-4">
                 <QrCode className="w-12 h-12 mx-auto text-pink-500 opacity-40" />
                 <h3 className="text-base font-bold text-slate-800 dark:text-slate-200">
-                  আপনি এখনও কোনো ইভেন্টে এনরোল করেননি
+                  You have not enrolled in any events yet
                 </h3>
                 <p className="text-xs text-slate-400 max-w-sm mx-auto">
-                  ইভেন্ট পেজে গিয়ে আপনার পছন্দের ইভেন্ট বেছে নিন এবং এক ক্লিকে রেজিস্ট্রেশন সম্পন্ন করুন।
+                  Browse our event catalog and register in just a single click.
                 </p>
                 <button
                   onClick={() => setActiveTab('events')}
                   className="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-xs font-bold px-6 py-2.5 rounded-xl"
                 >
-                  ইভেন্ট ব্রাউজ করুন
+                  Browse Events
                 </button>
               </div>
             ) : (
@@ -841,7 +890,7 @@ export default function HomePage() {
                         className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white font-bold py-2.5 rounded-xl text-xs shadow-md shadow-pink-500/20 flex items-center justify-center gap-2"
                       >
                         <QrCode className="w-4 h-4" />
-                        ডিজিটাল কিউআর টিকিট দেখুন
+                        View Digital QR Pass
                       </button>
 
                       {reg.status === 'attended' && (
@@ -866,7 +915,7 @@ export default function HomePage() {
                             className="bg-amber-600/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-600 hover:text-white font-bold py-2 rounded-xl text-[11px] flex items-center justify-center gap-1"
                           >
                             <Award className="w-3.5 h-3.5" />
-                            সার্টিফিকেট
+                            Certificate
                           </button>
 
                           <button
@@ -874,7 +923,7 @@ export default function HomePage() {
                             className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold py-2 rounded-xl text-[11px] flex items-center justify-center gap-1"
                           >
                             <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
-                            রিভিউ দিন
+                            Write Review
                           </button>
                         </div>
                       )}
@@ -925,7 +974,7 @@ export default function HomePage() {
                 rel="noreferrer"
                 className="bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 transition"
               >
-                <span>মূল ছবি ডাউনলোড / ভিউ</span>
+                <span>View Full Image</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             </div>
@@ -941,7 +990,7 @@ export default function HomePage() {
                 onClick={() => setSelectedGalleryPhoto(null)}
                 className="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs"
               >
-                বন্ধ করুন
+                Close
               </button>
             </div>
           </div>
@@ -983,7 +1032,7 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-2">
-              <h4 className="font-bold text-sm text-slate-900 dark:text-white">ইভেন্টের বিবরণ</h4>
+              <h4 className="font-bold text-sm text-slate-900 dark:text-white">Event Details</h4>
               <p className="text-xs text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">
                 {selectedEvent.description}
               </p>
@@ -994,7 +1043,7 @@ export default function HomePage() {
                 onClick={() => setSelectedEvent(null)}
                 className="px-5 py-2.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-800"
               >
-                বন্ধ করুন
+                Close
               </button>
               <button
                 onClick={() => {
@@ -1004,7 +1053,7 @@ export default function HomePage() {
                 }}
                 className="bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-md"
               >
-                রেজিস্ট্রেশন করুন
+                Register Now
               </button>
             </div>
           </div>
@@ -1059,7 +1108,7 @@ export default function HomePage() {
         onClose={() => setIsCreateEventOpen(false)}
         onSuccess={(newEvent) => {
           setEvents((prev) => [newEvent, ...prev]);
-          alert(user?.role === 'admin' ? '🎉 ইভেন্ট তৈরি ও প্রকাশিত হয়েছে!' : '🎉 ইভেন্ট অ্যাডমিনের অনুমোদনের জন্য জমা দেওয়া হয়েছে!');
+          alert(user?.role === 'admin' ? '🎉 Event created & published!' : '🎉 Event submitted for admin approval!');
         }}
       />
 
@@ -1068,7 +1117,7 @@ export default function HomePage() {
         <Modal
           isOpen={Boolean(feedbackEvent)}
           onClose={() => setFeedbackEvent(null)}
-          title="ইভেন্ট রিভিউ ও মতামত"
+          title="Event Review & Feedback"
           maxWidth="md"
         >
           <form onSubmit={handleFeedbackSubmit} className="space-y-4">
@@ -1078,11 +1127,11 @@ export default function HomePage() {
               </div>
             )}
             <div>
-              <label className="block text-xs font-semibold mb-1">ইভেন্ট</label>
+              <label className="block text-xs font-semibold mb-1">Event</label>
               <p className="font-bold text-xs text-slate-900 dark:text-white">{feedbackEvent.eventTitle}</p>
             </div>
             <div>
-              <label className="block text-xs font-semibold mb-1">রেটিং (Rating: 1 - 5 Stars)</label>
+              <label className="block text-xs font-semibold mb-1">Rating (1 - 5 Stars)</label>
               <div className="flex gap-2">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
@@ -1103,11 +1152,11 @@ export default function HomePage() {
               </div>
             </div>
             <div>
-              <label className="block text-xs font-semibold mb-1">আপনার মূল্যবান মন্তব্য (Comment)</label>
+              <label className="block text-xs font-semibold mb-1">Your Feedback & Comments</label>
               <textarea
                 value={feedbackComment}
                 onChange={(e) => setFeedbackComment(e.target.value)}
-                placeholder="ইভেন্টের অভিজ্ঞতা, স্পিকার ও আয়োজন সম্পর্কে লিখুন..."
+                placeholder="Share your thoughts regarding the event speakers, organization, and experience..."
                 rows={3}
                 required
                 className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs focus:border-pink-500"
@@ -1119,13 +1168,13 @@ export default function HomePage() {
                 onClick={() => setFeedbackEvent(null)}
                 className="px-4 py-2 rounded-xl text-xs font-semibold border"
               >
-                বাতিল
+                Cancel
               </button>
               <button
                 type="submit"
                 className="bg-pink-600 hover:bg-pink-700 text-white font-bold px-5 py-2 rounded-xl text-xs shadow-md"
               >
-                সাবমিট করুন
+                Submit Feedback
               </button>
             </div>
           </form>

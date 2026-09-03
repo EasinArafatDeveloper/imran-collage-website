@@ -83,7 +83,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                 : 'hover:text-pink-500 hover:bg-slate-100 dark:hover:bg-slate-800/60'
             }`}
           >
-            {settings.navHomeText || 'হোম'}
+            {settings.navHomeText || 'Home'}
           </button>
           <button
             onClick={() => handleNavClick('events')}
@@ -93,7 +93,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                 : 'hover:text-pink-500 hover:bg-slate-100 dark:hover:bg-slate-800/60'
             }`}
           >
-            {settings.navEventsText || 'ইভেন্ট সমূহ'}
+            {settings.navEventsText || 'All Events'}
           </button>
           <button
             onClick={() => handleNavClick('moments')}
@@ -103,7 +103,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                 : 'hover:text-pink-500 hover:bg-slate-100 dark:hover:bg-slate-800/60'
             }`}
           >
-            {settings.navMomentsText || 'স্মৃতি গ্যালারি'}
+            {settings.navMomentsText || 'Moments Gallery'}
           </button>
           <button
             onClick={() => handleNavClick('clubs')}
@@ -113,7 +113,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                 : 'hover:text-pink-500 hover:bg-slate-100 dark:hover:bg-slate-800/60'
             }`}
           >
-            {settings.navClubsText || 'ক্লাব সমূহ'}
+            {settings.navClubsText || 'Clubs & Socs'}
           </button>
           <button
             onClick={() => handleNavClick('enrolled')}
@@ -123,7 +123,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                 : 'hover:text-pink-500 hover:bg-slate-100 dark:hover:bg-slate-800/60'
             }`}
           >
-            {settings.navEnrolledText || 'এনরোল্ড সদস্য'}
+            {settings.navEnrolledText || 'Enrolled Members'}
           </button>
 
           {/* Student Shortcut: My Events & Pass */}
@@ -137,19 +137,8 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
               }`}
             >
               <Ticket className="w-3.5 h-3.5" />
-              মাই ইভেন্টস & পাস
+              My Events & Pass
             </button>
-          )}
-
-          {/* Admin Shortcut: Full Standalone Admin Dashboard */}
-          {user?.role === 'admin' && (
-            <a
-              href="/admin"
-              className="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 font-bold shadow-sm text-pink-600 dark:text-pink-400 bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/20"
-            >
-              <ShieldCheck className="w-4 h-4 text-pink-500" />
-              এডমিন ড্যাশবোর্ড
-            </a>
           )}
 
           <button
@@ -160,7 +149,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                 : 'hover:text-pink-500 hover:bg-slate-100 dark:hover:bg-slate-800/60'
             }`}
           >
-            {settings.navAnalyticsText || 'অ্যানালিটিক্স'}
+            {settings.navAnalyticsText || 'Analytics'}
           </button>
         </nav>
 
@@ -181,17 +170,17 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                   ? 'bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-500/30 hover:bg-pink-500/20'
                   : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
               }`}
-              title={user.role === 'admin' ? 'এডমিন হিসেবে সক্রিয় - ড্যাশবোর্ডে যান' : 'শিক্ষার্থী হিসেবে সক্রিয়'}
+              title={user.role === 'admin' ? 'Active as Admin - Open Dashboard' : 'Active as Student'}
             >
               {user.role === 'admin' ? (
                 <>
                   <ShieldCheck className="w-3.5 h-3.5 text-pink-500" />
-                  <span>এডমিন (Admin)</span>
+                  <span>Admin</span>
                 </>
               ) : (
                 <>
                   <GraduationCap className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>শিক্ষার্থী (Student)</span>
+                  <span>Student</span>
                 </>
               )}
             </div>
@@ -243,7 +232,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                         className="w-full text-left px-3 py-2 rounded-xl text-xs text-pink-600 dark:text-pink-400 hover:bg-pink-50 dark:hover:bg-pink-950/40 flex items-center gap-2 font-bold"
                       >
                         <ShieldCheck className="w-4 h-4 text-pink-500" />
-                        এডমিন কন্ট্রোল ড্যাশবোর্ড
+                        Admin Control Dashboard
                       </a>
                     ) : (
                       <button
@@ -251,7 +240,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                         className="w-full text-left px-3 py-2 rounded-xl text-xs text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center gap-2 font-bold"
                       >
                         <Ticket className="w-4 h-4 text-emerald-500" />
-                        মাই ইভেন্টস & কিউআর পাস
+                        My Events & QR Pass
                       </button>
                     )}
 
@@ -263,7 +252,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                       className="w-full text-left px-3 py-2 rounded-xl text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2"
                     >
                       <LogIn className="w-3.5 h-3.5 text-slate-400" />
-                      অন্য একাউন্টে লগইন
+                      Switch / Login Account
                     </button>
 
                     <button
@@ -274,7 +263,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                       className="w-full text-left px-3 py-2 rounded-xl text-xs text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 flex items-center gap-2 font-medium"
                     >
                       <LogOut className="w-3.5 h-3.5" />
-                      লগআউট করুন
+                      Log Out
                     </button>
                   </div>
                 </div>
@@ -286,7 +275,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
               className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-md shadow-pink-500/20 transition flex items-center gap-1.5"
             >
               <LogIn className="w-3.5 h-3.5" />
-              {settings.loginButtonText || 'লগইন / সাইন আপ'}
+              {settings.loginButtonText || 'Login / Sign Up'}
             </button>
           )}
 
@@ -309,37 +298,37 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
               onClick={() => handleNavClick('home')}
               className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-left hover:text-pink-500 font-medium"
             >
-              🏠 হোম পেজ
+              🏠 Home
             </button>
             <button
               onClick={() => handleNavClick('events')}
               className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-left hover:text-pink-500 font-medium"
             >
-              🎉 ইভেন্ট সমূহ
+              🎉 All Events
             </button>
             <button
               onClick={() => handleNavClick('moments')}
               className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-left hover:text-pink-500 font-medium"
             >
-              📸 স্মৃতি গ্যালারি
+              📸 Moments
             </button>
             <button
               onClick={() => handleNavClick('clubs')}
               className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-left hover:text-pink-500 font-medium"
             >
-              🏛️ ক্লাব সমূহ
+              🏛️ Clubs
             </button>
             <button
               onClick={() => handleNavClick('enrolled')}
               className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-left hover:text-pink-500 font-medium"
             >
-              👥 এনরোল্ড সদস্য
+              👥 Enrolled
             </button>
             <button
               onClick={() => handleNavClick('analytics')}
               className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-left hover:text-pink-500 font-medium"
             >
-              📊 অ্যানালিটিক্স
+              📊 Analytics
             </button>
 
             {user?.role === 'admin' && (
@@ -348,7 +337,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                 className="p-2.5 rounded-xl bg-pink-500/10 border border-pink-500/30 text-pink-600 dark:text-pink-400 font-bold text-left col-span-2 flex items-center gap-2"
               >
                 <ShieldCheck className="w-4 h-4 text-pink-500" />
-                🛡️ এডমিন কন্ট্রোল ড্যাশবোর্ড
+                🛡️ Admin Control Dashboard
               </a>
             )}
 
@@ -358,7 +347,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                 className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-bold text-left col-span-2 flex items-center gap-2"
               >
                 <Ticket className="w-4 h-4 text-emerald-500" />
-                🎟️ মাই ইভেন্টস & ডিজিটাল কিউআর পাস
+                🎟️ My Events & Digital QR Pass
               </button>
             )}
 
@@ -370,7 +359,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                 }}
                 className="p-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold text-center col-span-2"
               >
-                লগইন / সাইন আপ করুন
+                Login / Sign Up
               </button>
             ) : (
               <button
@@ -380,7 +369,7 @@ export default function Navbar({ activeTab, setActiveTab, onOpenLoginModal }: Na
                 }}
                 className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/30 text-rose-600 font-semibold text-center col-span-2"
               >
-                লগআউট করুন
+                Log Out
               </button>
             )}
           </div>

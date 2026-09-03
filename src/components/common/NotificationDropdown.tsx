@@ -90,7 +90,7 @@ export default function NotificationDropdown() {
         <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl z-50 overflow-hidden animate-fade-in">
           <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-sm text-slate-900 dark:text-white">বিজ্ঞপ্তি সমূহ</span>
+              <span className="font-semibold text-sm text-slate-900 dark:text-white">Notifications</span>
               {unreadCount > 0 && (
                 <span className="bg-pink-500/10 text-pink-500 border border-pink-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full">
                   {unreadCount} New
@@ -102,7 +102,7 @@ export default function NotificationDropdown() {
                 onClick={markAllAsRead}
                 className="text-xs text-pink-600 dark:text-pink-400 hover:underline flex items-center gap-1 font-medium"
               >
-                <CheckCheck className="w-3.5 h-3.5" /> সব পড়া হয়েছে
+                <CheckCheck className="w-3.5 h-3.5" /> Mark all read
               </button>
             )}
           </div>
@@ -111,7 +111,7 @@ export default function NotificationDropdown() {
             {notifications.length === 0 ? (
               <div className="p-8 text-center text-slate-400 dark:text-slate-500 text-xs">
                 <Bell className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                <p>কোনো নতুন বিজ্ঞপ্তি নেই</p>
+                <p>No new notifications</p>
               </div>
             ) : (
               notifications.map((n) => (
@@ -153,7 +153,7 @@ export default function NotificationDropdown() {
               }}
               className="text-[11px] text-slate-500 dark:text-slate-400 hover:text-pink-500 font-medium"
             >
-              রিফ্রেশ করুন
+              Refresh Notifications
             </button>
           </div>
         </div>

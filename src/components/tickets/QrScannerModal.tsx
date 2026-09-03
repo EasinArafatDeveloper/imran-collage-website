@@ -63,12 +63,12 @@ export default function QrScannerModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="⚡ লাইভ কিউআর এটেন্ডেন্স স্ক্যানার" maxWidth="xl">
+    <Modal isOpen={isOpen} onClose={onClose} title="⚡ Live QR Attendance Scanner" maxWidth="xl">
       <div className="space-y-5">
         {/* Event Selection */}
         <div>
           <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-            ইভেন্ট নির্বাচন করুন (Event to Check-in)
+            Select Event to Check-in
           </label>
           <select
             value={activeEventId}
@@ -91,9 +91,9 @@ export default function QrScannerModal({
           <div className="w-16 h-16 rounded-2xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 mb-3 animate-pulse">
             <Scan className="w-8 h-8" />
           </div>
-          <h4 className="text-sm font-bold text-white">কিউআর কোড স্ক্যান করুন</h4>
+          <h4 className="text-sm font-bold text-white">Scan Attendee QR Code</h4>
           <p className="text-xs text-slate-400 max-w-xs mt-1">
-            ক্যামেরা পয়েন্ট করুন অথবা নিচে রেজিস্ট্রেশন কোড / টোকেন দিন
+            Point physical camera or enter registration booking code / QR token below
           </p>
 
           {/* Scanner laser animation line */}
@@ -107,7 +107,7 @@ export default function QrScannerModal({
               type="text"
               value={tokenInput}
               onChange={(e) => setTokenInput(e.target.value)}
-              placeholder="যেমন: REG-2026-X9A2 অথবা কিউআর পেলোড টোকেন"
+              placeholder="e.g. REG-2026-X9A2 or QR Token"
               className="flex-1 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white font-mono uppercase focus:outline-none focus:border-pink-500"
             />
             <button
@@ -115,17 +115,17 @@ export default function QrScannerModal({
               disabled={verifying || !tokenInput.trim()}
               className="bg-pink-600 hover:bg-pink-700 disabled:opacity-50 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shrink-0 shadow-lg shadow-pink-600/30"
             >
-              {verifying ? 'যাচাই হচ্ছে...' : 'যাচাই করুন'}
+              {verifying ? 'Verifying...' : 'Verify Ticket'}
             </button>
           </div>
           <div className="flex items-center justify-between text-[11px] text-slate-400">
-            <span>কুইক ডেমো কোড:</span>
+            <span>Quick Demo:</span>
             <button
               type="button"
               onClick={() => setTokenInput('REG-2026-')}
               className="text-pink-500 hover:underline font-mono"
             >
-              REG-2026- প্রিফিক্স দিন
+              Fill REG-2026- prefix
             </button>
           </div>
         </form>
@@ -155,19 +155,19 @@ export default function QrScannerModal({
             {result.participant && (
               <div className="pt-2 border-t border-current/20 grid grid-cols-2 gap-2 text-slate-800 dark:text-slate-200">
                 <div>
-                  <span className="text-[10px] text-slate-400 block">শিক্ষার্থীর নাম</span>
+                  <span className="text-[10px] text-slate-400 block">Student Name</span>
                   <span className="font-bold">{result.participant.name}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 block">স্টুডেন্ট আইডি</span>
+                  <span className="text-[10px] text-slate-400 block">Student ID</span>
                   <span className="font-mono font-bold">{result.participant.studentId}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 block">ডিপার্টমেন্ট</span>
+                  <span className="text-[10px] text-slate-400 block">Department</span>
                   <span>{result.participant.department}</span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 block">ভেরিফিকেশন সময়</span>
+                  <span className="text-[10px] text-slate-400 block">Checked-in At</span>
                   <span>{new Date(result.participant.checkedInAt).toLocaleTimeString()}</span>
                 </div>
               </div>

@@ -45,9 +45,9 @@ export default function AuditLogViewer() {
         <div>
           <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
             <Shield className="w-4 h-4 text-pink-500" />
-            সিস্টেম সিকিউরিটি অডিট লগ (Audit Trail)
+            System Security Audit Trail
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">বিশ্ববিদ্যালয় নিয়মানুবর্তিতা ও নিরাপত্তার সকল রেকর্ড</p>
+          <p className="text-xs text-slate-400 mt-0.5">Comprehensive audit logs and compliance history of all administrative actions</p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -56,17 +56,17 @@ export default function AuditLogViewer() {
             onChange={(e) => setActionFilter(e.target.value)}
             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1.5 text-xs focus:border-pink-500"
           >
-            <option value="all">সকল অডিট ইভেন্ট</option>
-            <option value="EVENT">ইভেন্ট সংক্রান্ত (Events)</option>
-            <option value="ATTENDANCE">উপস্থিতি যাচাই (Attendance)</option>
-            <option value="REGISTRATION">রেজিস্ট্রেশন (Registrations)</option>
-            <option value="USER">ইউজার মডারেশন (User)</option>
+            <option value="all">All Audit Events</option>
+            <option value="EVENT">Events</option>
+            <option value="ATTENDANCE">Attendance & Check-in</option>
+            <option value="REGISTRATION">Registrations</option>
+            <option value="USER">User Moderation</option>
           </select>
           <button
             onClick={fetchLogs}
             className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 px-3 py-1.5 rounded-xl text-xs font-semibold"
           >
-            রিফ্রেশ
+            Refresh
           </button>
         </div>
       </div>
@@ -75,11 +75,11 @@ export default function AuditLogViewer() {
         <table className="w-full text-left text-xs">
           <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 uppercase font-semibold border-b border-slate-200 dark:border-slate-800">
             <tr>
-              <th className="p-4">সময় (Timestamp)</th>
-              <th className="p-4">অ্যাকশন (Action)</th>
-              <th className="p-4">ব্যবহারকারী (User & Role)</th>
-              <th className="p-4">এনটিটি</th>
-              <th className="p-4">বিস্তারিত তথ্য</th>
+              <th className="p-4">Timestamp</th>
+              <th className="p-4">Action</th>
+              <th className="p-4">User & Role</th>
+              <th className="p-4">Entity</th>
+              <th className="p-4">Details</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">

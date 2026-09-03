@@ -74,7 +74,7 @@ export default function AuthModal({
     setSuccessMsg('');
 
     if (!loginIdentifier || !loginPassword) {
-      setError('অনুগ্রহ করে আইডি/ইমেইল এবং পাসওয়ার্ড প্রদান করুন');
+      setError('Please provide your ID / Email and password');
       return;
     }
 
@@ -83,22 +83,22 @@ export default function AuthModal({
       const res = await login(loginIdentifier, loginPassword);
       if (res.success && res.user) {
         if (res.user.role === 'admin') {
-          setSuccessMsg('এডমিন ভেরিফিকেশন সফল! সরাসরি এডমিন ড্যাশবোর্ডে নেওয়া হচ্ছে...');
+          setSuccessMsg('Admin verified! Redirecting to Admin Dashboard...');
           setTimeout(() => {
             window.location.href = '/admin';
           }, 600);
         } else {
-          setSuccessMsg(`স্বাগতম ${res.user.name}!`);
+          setSuccessMsg(`Welcome back, ${res.user.name}!`);
           setTimeout(() => {
             onLoginSuccess && onLoginSuccess('student');
             onClose();
           }, 600);
         }
       } else {
-        setError(res.message || 'ভুল ইউজার আইডি বা পাসওয়ার্ড');
+        setError(res.message || 'Invalid user ID or password');
       }
     } catch (err: any) {
-      setError('লগইনে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+      setError('Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -110,23 +110,23 @@ export default function AuthModal({
     setSuccessMsg('');
 
     if (!regName.trim()) {
-      setError('আপনার পূর্ণ নাম লিখুন');
+      setError('Please enter your full name');
       return;
     }
     if (!regStudentId.trim()) {
-      setError('স্টুডেন্ট আইডি প্রদান করুন');
+      setError('Please enter your Student ID');
       return;
     }
     if (!regEmail.trim() || !regEmail.includes('@')) {
-      setError('সঠিক ইমেইল এড্রেস লিখুন');
+      setError('Please enter a valid email address');
       return;
     }
     if (regPassword.length < 6) {
-      setError('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে');
+      setError('Password must be at least 6 characters');
       return;
     }
     if (regPassword !== regConfirmPassword) {
-      setError('উভয় পাসওয়ার্ড মিলছে না');
+      setError('Passwords do not match');
       return;
     }
 
@@ -142,16 +142,16 @@ export default function AuthModal({
       });
 
       if (res.success && res.user) {
-        setSuccessMsg('রেজিস্ট্রেশন ও লগইন সফল হয়েছে! স্বাগতম।');
+        setSuccessMsg('Registration successful! Welcome aboard.');
         setTimeout(() => {
           onLoginSuccess && onLoginSuccess('student');
           onClose();
         }, 700);
       } else {
-        setError(res.message || 'রেজিস্ট্রেশন ব্যর্থ হয়েছে');
+        setError(res.message || 'Registration failed');
       }
     } catch (err: any) {
-      setError('রেজিস্ট্রেশনে ত্রুটি হয়েছে।');
+      setError('Registration error occurred.');
     } finally {
       setLoading(false);
     }
@@ -171,10 +171,10 @@ export default function AuthModal({
             <Sparkles className="w-6 h-6" />
           </div>
           <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-            আমার অনুষ্ঠান <span className="text-pink-500">.</span> পোর্টাল
+            CampusEvents <span className="text-pink-500">.</span> Portal
           </h3>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            বিশ্ববিদ্যালয়ের অনুষ্ঠান ও ডিজিটাল কিউআর পাস সিস্টেমে প্রবেশ করুন
+            Sign in to access campus events, tickets, and digital QR passes
           </p>
         </div>
 
@@ -194,7 +194,7 @@ export default function AuthModal({
             }`}
           >
             <KeyRound className="w-3.5 h-3.5" />
-            লগইন (Sign In)
+            Sign In
           </button>
           <button
             type="button"
@@ -210,7 +210,7 @@ export default function AuthModal({
             }`}
           >
             <GraduationCap className="w-3.5 h-3.5" />
-            নতুন শিক্ষার্থী সাইন আপ (Sign Up)
+            Student Sign Up
           </button>
         </div>
 
@@ -235,7 +235,7 @@ export default function AuthModal({
             {/* Email / ID Input */}
             <div className="space-y-1">
               <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                ইমেইল / স্টুডেন্ট আইডি / এডমিন আইডি
+                Email / Student ID / Admin Username
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -244,7 +244,7 @@ export default function AuthModal({
                   required
                   value={loginIdentifier}
                   onChange={(e) => setLoginIdentifier(e.target.value)}
-                  placeholder="আপনার ইমেইল বা আইডি লিখুন"
+                  placeholder="Enter your email or user ID"
                   className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 transition"
                 />
               </div>
@@ -253,7 +253,7 @@ export default function AuthModal({
             {/* Password Input */}
             <div className="space-y-1">
               <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                পাসওয়ার্ড
+                Password
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -262,7 +262,7 @@ export default function AuthModal({
                   required
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  placeholder="আপনার পাসওয়ার্ড লিখুন"
+                  placeholder="Enter your password"
                   className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 transition"
                 />
                 <button
@@ -282,10 +282,10 @@ export default function AuthModal({
               className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg shadow-pink-500/25 transition flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {loading ? (
-                <span>লগইন হচ্ছে...</span>
+                <span>Signing in...</span>
               ) : (
                 <>
-                  <span>লগইন করুন</span>
+                  <span>Sign In</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -298,7 +298,7 @@ export default function AuthModal({
           <form onSubmit={handleRegisterSubmit} className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
             <div className="space-y-1">
               <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                পূর্ণ নাম (Full Name) <span className="text-rose-500">*</span>
+                Full Name <span className="text-rose-500">*</span>
               </label>
               <div className="relative">
                 <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -316,7 +316,7 @@ export default function AuthModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  স্টুডেন্ট আইডি (ID / Roll) <span className="text-rose-500">*</span>
+                  Student ID <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <IdCard className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -333,7 +333,7 @@ export default function AuthModal({
 
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  বিশ্ববিদ্যালয় ইমেইল <span className="text-rose-500">*</span>
+                  University Email <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -352,7 +352,7 @@ export default function AuthModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  ডিপার্টমেন্ট (Department)
+                  Department
                 </label>
                 <div className="relative">
                   <Building2 className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -372,7 +372,7 @@ export default function AuthModal({
 
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  মোবাইল নম্বর (Phone)
+                  Phone Number
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -390,7 +390,7 @@ export default function AuthModal({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  পাসওয়ার্ড <span className="text-rose-500">*</span>
+                  Password <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -399,7 +399,7 @@ export default function AuthModal({
                     required
                     value={regPassword}
                     onChange={(e) => setRegPassword(e.target.value)}
-                    placeholder="কমপক্ষে ৬ অক্ষর"
+                    placeholder="Min 6 characters"
                     className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
                   />
                 </div>
@@ -407,7 +407,7 @@ export default function AuthModal({
 
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  পাসওয়ার্ড নিশ্চিত করুন <span className="text-rose-500">*</span>
+                  Confirm Password <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -416,7 +416,7 @@ export default function AuthModal({
                     required
                     value={regConfirmPassword}
                     onChange={(e) => setRegConfirmPassword(e.target.value)}
-                    placeholder="একই পাসওয়ার্ড লিখুন"
+                    placeholder="Re-enter password"
                     className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
                   />
                 </div>
@@ -430,11 +430,11 @@ export default function AuthModal({
                 className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg shadow-pink-500/25 transition flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {loading ? (
-                  <span>রেজিস্ট্রেশন হচ্ছে...</span>
+                  <span>Creating Account...</span>
                 ) : (
                   <>
                     <GraduationCap className="w-4 h-4" />
-                    <span>একাউন্ট তৈরি করুন (Sign Up)</span>
+                    <span>Create Account (Sign Up)</span>
                   </>
                 )}
               </button>

@@ -72,7 +72,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
     setFormError('');
 
     if (!newTitle.trim() || !newImageUrl.trim()) {
-      setFormError('ছবির শিরোনাম এবং ছবির ইমেজ ইউআরএল (URL) প্রদান আবশ্যক');
+      setFormError('Photo title and image URL are required');
       return;
     }
 
@@ -102,15 +102,15 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'success',
-          title: 'ছবি সফলভাবে যুক্ত হয়েছে! 📸',
-          message: `"${data.data.title}" ছবিটি স্মৃতি গ্যালারি ও হোম পেইজে প্রদর্শিত হবে।`,
-          confirmText: 'চমৎকার',
+          title: 'Photo Added Successfully! 📸',
+          message: `"${data.data.title}" will be displayed across the homepage gallery and moments showcase.`,
+          confirmText: 'Great',
         });
       } else {
-        setFormError(data.message || 'ছবি আপলোড ব্যর্থ হয়েছে');
+        setFormError(data.message || 'Failed to add photo');
       }
     } catch (err: any) {
-      setFormError('সার্ভার ইরর হয়েছে।');
+      setFormError('A server error occurred.');
     } finally {
       setUploading(false);
     }
@@ -120,10 +120,10 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
     onTriggerAlert && onTriggerAlert({
       isOpen: true,
       type: 'confirm',
-      title: 'ছবি ডিলিট নিশ্চিত করুন!',
-      message: `আপনি কি "${photo.title}" ছবিটি গ্যালারি থেকে স্থায়ীভাবে মুছে ফেলতে চান?`,
-      confirmText: 'হ্যাঁ, ডিলিট করুন',
-      cancelText: 'বাতিল',
+      title: 'Confirm Photo Deletion',
+      message: `Are you sure you want to permanently delete "${photo.title}" from the gallery?`,
+      confirmText: 'Yes, Delete',
+      cancelText: 'Cancel',
       onConfirm: async () => {
         try {
           const res = await fetch(`/api/gallery?id=${photo._id}`, {
@@ -135,9 +135,9 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
             onTriggerAlert({
               isOpen: true,
               type: 'success',
-              title: 'ছবি ডিলিট সম্পন্ন!',
-              message: 'ছবিটি সফলভাবে মুছে ফেলা হয়েছে।',
-              confirmText: 'ঠিক আছে',
+              title: 'Photo Deleted!',
+              message: 'Photo removed from the gallery archive.',
+              confirmText: 'OK',
             });
           }
         } catch (e) {
@@ -164,10 +164,10 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <ImageIcon className="w-5 h-5 text-pink-500" />
-            ক্যাম্পাস স্মৃতি ও ফটো গ্যালারি ম্যানেজমেন্ট
+            Campus Moments & Photo Gallery Management
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            এখানে যুক্ত করা সমস্ত ছবি হোম পেজের গ্যালারি সেকশন এবং পূর্ণ স্মৃতি মেমোরিজ পেজে লাইভ প্রদর্শিত হবে
+            Photos uploaded here are instantly showcased across the homepage gallery grid and memories showcase
           </p>
         </div>
 
@@ -176,7 +176,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
           className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-pink-500/25 transition flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          <span>+ নতুন ছবি যুক্ত করুন</span>
+          <span>+ Add New Photo</span>
         </button>
       </div>
 
@@ -188,7 +188,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="ছবির শিরোনাম বা ইভেন্টের নাম দিয়ে খুঁজুন..."
+            placeholder="Search by title, event, or category..."
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-pink-500"
           />
         </div>
@@ -199,7 +199,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
             onChange={(e) => setCategoryFilter(e.target.value)}
             className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-700 dark:text-slate-300 font-semibold focus:outline-none focus:border-pink-500"
           >
-            <option value="all">সকল ক্যাটাগরি</option>
+            <option value="all">All Categories</option>
             {categories.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
@@ -210,7 +210,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
           <button
             onClick={fetchPhotos}
             className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition"
-            title="রিফ্রেশ করুন"
+            title="Refresh Gallery"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -221,14 +221,14 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
       {loading ? (
         <div className="py-20 text-center text-slate-500 flex flex-col items-center gap-2">
           <div className="w-7 h-7 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-semibold">ছবিগুলো লোড হচ্ছে...</span>
+          <span className="text-xs font-semibold">Loading gallery photos...</span>
         </div>
       ) : filteredPhotos.length === 0 ? (
         <div className="p-12 text-center rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm dark:shadow-none">
           <ImageIcon className="w-12 h-12 text-slate-400 dark:text-slate-600 mx-auto" />
-          <h3 className="font-bold text-slate-900 dark:text-white text-sm">কোন ছবি পাওয়া যায়নি</h3>
+          <h3 className="font-bold text-slate-900 dark:text-white text-sm">No photos found</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            উপরে "+ নতুন ছবি যুক্ত করুন" বাটনে ক্লিক করে প্রথম ক্যাম্পাস স্মৃতি যুক্ত করুন।
+            Click "+ Add New Photo" above to upload festival and campus memory photos.
           </p>
         </div>
       ) : (
@@ -250,7 +250,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
                 <button
                   onClick={() => handleDeletePhoto(item)}
                   className="absolute top-2.5 right-2.5 p-1.5 rounded-lg bg-rose-600/90 hover:bg-rose-600 text-white shadow-md opacity-0 group-hover:opacity-100 transition"
-                  title="ছবি ডিলিট করুন"
+                  title="Delete Photo"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -275,7 +275,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
                     rel="noreferrer"
                     className="hover:text-pink-500 dark:hover:text-pink-400 flex items-center gap-1"
                   >
-                    <span>মূল ছবি</span>
+                    <span>View Image</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
@@ -289,10 +289,10 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
       <Modal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="📸 নতুন ক্যাম্পাস স্মৃতি ও ছবি যুক্ত করুন"
+        title="📸 Add Campus Moment Photo"
         maxWidth="lg"
       >
-        <form onSubmit={handleAddPhoto} className="space-y-4 text-xs text-slate-700 dark:text-slate-300">
+        <form onSubmit={handleAddPhoto} noValidate className="space-y-4 text-xs text-slate-700 dark:text-slate-300">
           {formError && (
             <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 font-semibold flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
@@ -303,14 +303,14 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
           {/* Title */}
           <div className="space-y-1">
             <label className="font-bold text-slate-700 dark:text-slate-300">
-              ছবির শিরোনাম (Title) <span className="text-rose-500">*</span>
+              Photo Title <span className="text-rose-500">*</span>
             </label>
             <input
               type="text"
               required
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              placeholder="e.g. ন্যাশনাল টেক ফেস্ট ২০২৬ ওপেনিং সেরেমনি"
+              placeholder="e.g. National Tech Fest Opening Ceremony"
               className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
             />
           </div>
@@ -318,14 +318,14 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
           {/* Image URL */}
           <div className="space-y-1">
             <label className="font-bold text-slate-700 dark:text-slate-300">
-              ছবির সরাসরি ওয়েব লিংক (Image URL) <span className="text-rose-500">*</span>
+              Direct Image URL <span className="text-rose-500">*</span>
             </label>
             <input
-              type="url"
+              type="text"
               required
               value={newImageUrl}
               onChange={(e) => setNewImageUrl(e.target.value)}
-              placeholder="https://images.unsplash.com/..."
+              placeholder="https://images.unsplash.com/... or /uploads/..."
               className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 font-mono"
             />
           </div>
@@ -350,7 +350,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
           {/* Category & Event Name */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-bold text-slate-700 dark:text-slate-300">ক্যাটাগরি</label>
+              <label className="font-bold text-slate-700 dark:text-slate-300">Category</label>
               <select
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
@@ -365,7 +365,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-slate-700 dark:text-slate-300">সম্পর্কিত ইভেন্টের নাম</label>
+              <label className="font-bold text-slate-700 dark:text-slate-300">Associated Event Name</label>
               <input
                 type="text"
                 value={newEventName}
@@ -378,12 +378,12 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
 
           {/* Description */}
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">সংক্ষিপ্ত বিবরণ (Optional)</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Description (Optional)</label>
             <textarea
               rows={2}
               value={newDescription}
               onChange={(e) => setNewDescription(e.target.value)}
-              placeholder="মুহূর্তটির সংক্ষিপ্ত বর্ণনা লিখুন..."
+              placeholder="Short description of the festival memory..."
               className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
             />
           </div>
@@ -395,7 +395,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
               onClick={() => setIsAddModalOpen(false)}
               className="px-5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold transition"
             >
-              বাতিল
+              Cancel
             </button>
             <button
               type="submit"
@@ -403,7 +403,7 @@ export default function GalleryManager({ onTriggerAlert }: GalleryManagerProps) 
               className="px-6 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white font-bold shadow-lg shadow-pink-500/25 transition flex items-center gap-2 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              <span>{uploading ? 'যুক্ত হচ্ছে...' : 'ছবি সংরক্ষণ করুন'}</span>
+              <span>{uploading ? 'Adding...' : 'Save Photo'}</span>
             </button>
           </div>
         </form>

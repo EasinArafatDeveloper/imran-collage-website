@@ -26,6 +26,13 @@ export interface ISiteSettingsData {
   heroSubtitle: string;
   heroPrimaryBtnText: string;
   heroSecondaryBtnText: string;
+  heroBgType?: string;
+  heroVideoUrl?: string;
+  heroVideoOpacity?: number;
+  heroOverlayDarkness?: number;
+  heroVideoBlur?: number;
+  heroVideoMuted?: boolean;
+  heroVideoLoop?: boolean;
 
   // Footer & Contact
   footerDescription: string;
@@ -39,32 +46,39 @@ export interface ISiteSettingsData {
 }
 
 export const defaultSiteSettings: ISiteSettingsData = {
-  logoText: 'আমার অনুষ্ঠান.',
+  logoText: 'CampusEvents.',
   logoTagline: 'University Event Hub',
   logoIcon: 'Sparkles',
   logoImageUrl: '',
   colorTheme: 'pink-purple',
 
-  navHomeText: 'হোম',
-  navEventsText: 'ইভেন্ট সমূহ',
-  navMomentsText: 'স্মৃতি গ্যালারি',
-  navClubsText: 'ক্লাব সমূহ',
-  navEnrolledText: 'এনরোল্ড সদস্য',
-  navAnalyticsText: 'অ্যানালিটিক্স',
-  loginButtonText: 'লগইন / সাইন আপ',
+  navHomeText: 'Home',
+  navEventsText: 'All Events',
+  navMomentsText: 'Moments Gallery',
+  navClubsText: 'Clubs & Socs',
+  navEnrolledText: 'Enrolled Members',
+  navAnalyticsText: 'Analytics',
+  loginButtonText: 'Login / Sign Up',
 
-  heroBadgeText: 'স্বাগতম! University Event Hub',
-  heroTitle: 'আমার অনুষ্ঠানে আপনাকে স্বাগতম',
-  heroHighlightedWord: 'স্বাগতম',
-  heroSubtitle: 'বিশ্ববিদ্যালয়ের সকল টেক ফেস্ট, সাংস্কৃতিক সন্ধ্যা, প্রতিযোগিতা, সেমিনার ও উৎসবের জন্য আধুনিক প্ল্যাটফর্ম। এখনই রেজিস্ট্রেশন করে আপনার ডিজিটাল কিউআর পাস সংগ্রহ করুন।',
-  heroPrimaryBtnText: 'ইভেন্ট এক্সপ্লোর করুন',
-  heroSecondaryBtnText: 'ক্যাম্পাস স্মৃতি দেখুন',
+  heroBadgeText: 'Welcome! University Event Hub',
+  heroTitle: 'Discover & Join Campus Events',
+  heroHighlightedWord: 'Campus Events',
+  heroSubtitle: 'The ultimate modern platform for university tech fests, cultural nights, sports tournaments, workshops, and student clubs. Register today and get your digital QR pass.',
+  heroPrimaryBtnText: 'Explore Events',
+  heroSecondaryBtnText: 'View Campus Moments',
+  heroBgType: 'video',
+  heroVideoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+  heroVideoOpacity: 75,
+  heroOverlayDarkness: 45,
+  heroVideoBlur: 0,
+  heroVideoMuted: true,
+  heroVideoLoop: true,
 
-  footerDescription: 'বিশ্ববিদ্যালয়ের সকল অনুষ্ঠান, সেমিনার, প্রতিযোগিতা ও সাংস্কৃতিক উৎসবের সমন্বিত আধুনিক প্ল্যাটফর্ম।',
-  contactAddress: 'ইউনিভার্সিটি সেন্ট্রাল ক্যাম্পাস, ঢাকা',
+  footerDescription: 'The unified modern platform for university seminars, competitions, workshops, and cultural fests.',
+  contactAddress: 'University Central Campus, Dhaka',
   contactEmail: 'events@university.edu',
   contactPhone: '+880 1712-345678',
-  copyrightText: '© 2026 আমার অনুষ্ঠান - University Student Event Management System. সর্বস্বত্ব সংরক্ষিত।',
+  copyrightText: '© 2026 CampusEvents - University Student Event Management System. All rights reserved.',
   facebookUrl: 'https://facebook.com',
   youtubeUrl: 'https://youtube.com',
   linkedinUrl: 'https://linkedin.com',
@@ -83,13 +97,32 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
   const [settings, setSettings] = useState<ISiteSettingsData>(defaultSiteSettings);
   const [loading, setLoading] = useState(true);
 
+  // 1. Instantly load from localStorage on client mount (0ms latency)
+  useEffect(() => {
+    try {
+      const cached = localStorage.getItem('imran_site_settings_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        setSettings((prev) => ({ ...prev, ...parsed }));
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
   const fetchSettings = async () => {
     try {
       setLoading(true);
       const res = await fetch('/api/settings');
       const data = await res.json();
       if (data.success && data.data) {
-        setSettings(data.data);
+        const merged = { ...defaultSiteSettings, ...data.data };
+        setSettings(merged);
+        try {
+          localStorage.setItem('imran_site_settings_cache', JSON.stringify(merged));
+        } catch (err) {
+          // ignore
+        }
       }
     } catch (e) {
       // ignore
@@ -111,12 +144,18 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
       });
       const data = await res.json();
       if (data.success && data.data) {
-        setSettings(data.data);
+        const merged = { ...defaultSiteSettings, ...data.data };
+        setSettings(merged);
+        try {
+          localStorage.setItem('imran_site_settings_cache', JSON.stringify(merged));
+        } catch (err) {
+          // ignore
+        }
         return { success: true, message: data.message };
       }
-      return { success: false, message: data.message || 'আপডেট ব্যর্থ হয়েছে' };
+      return { success: false, message: data.message || 'Update failed' };
     } catch (e: any) {
-      return { success: false, message: e.message || 'সার্ভার ইরর হয়েছে' };
+      return { success: false, message: e.message || 'Server error occurred' };
     }
   };
 

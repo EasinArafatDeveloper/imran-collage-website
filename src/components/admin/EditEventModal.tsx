@@ -85,7 +85,7 @@ export default function EditEventModal({
 
     setError('');
     if (!title.trim() || !venue.trim() || !startAt) {
-      setError('ইভেন্টের নাম, স্থান ও শুরুর সময় আবশ্যক');
+      setError('Event title, venue, and start time are required');
       return;
     }
 
@@ -118,10 +118,10 @@ export default function EditEventModal({
         onSuccess(data.data);
         onClose();
       } else {
-        setError(data.message || 'ইভেন্ট আপডেট করতে সমস্যা হয়েছে');
+        setError(data.message || 'Failed to update event');
       }
     } catch (err: any) {
-      setError('সার্ভারে ত্রুটি হয়েছে।');
+      setError('A server error occurred.');
     } finally {
       setLoading(false);
     }
@@ -133,10 +133,10 @@ export default function EditEventModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="✏️ ইভেন্ট তথ্য এডিট ও আপডেট করুন"
+      title="✏️ Edit & Update Event Details"
       maxWidth="2xl"
     >
-      <form onSubmit={handleSubmit} className="space-y-4 max-h-[75vh] overflow-y-auto pr-1 text-xs">
+      <form onSubmit={handleSubmit} noValidate className="space-y-4 max-h-[75vh] overflow-y-auto pr-1 text-xs">
         {error && (
           <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 font-semibold flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
@@ -147,13 +147,14 @@ export default function EditEventModal({
         {/* Title */}
         <div className="space-y-1">
           <label className="font-bold text-slate-700 dark:text-slate-300">
-            ইভেন্টের নাম (Title) <span className="text-rose-500">*</span>
+            Event Title <span className="text-rose-500">*</span>
           </label>
           <input
             type="text"
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. Annual Tech Symposium 2026"
             className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none"
           />
         </div>
@@ -161,7 +162,7 @@ export default function EditEventModal({
         {/* Category & Status */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">ক্যাটাগরি</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Category</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -176,13 +177,13 @@ export default function EditEventModal({
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">ইভেন্ট স্ট্যাটাস</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Event Status</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as any)}
               className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none font-bold"
             >
-              <option value="published">🟢 Published (সরাসরি লাইভ)</option>
+              <option value="published">🟢 Published (Live)</option>
               <option value="pending_approval">🟡 Pending Approval</option>
               <option value="draft">⚪ Draft</option>
               <option value="completed">🔵 Completed</option>
@@ -195,7 +196,7 @@ export default function EditEventModal({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1">
             <label className="font-bold text-slate-700 dark:text-slate-300">
-              অনুষ্ঠানস্থল / ভেন্যু <span className="text-rose-500">*</span>
+              Venue / Location <span className="text-rose-500">*</span>
             </label>
             <div className="relative">
               <MapPin className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -204,17 +205,19 @@ export default function EditEventModal({
                 required
                 value={venue}
                 onChange={(e) => setVenue(e.target.value)}
+                placeholder="Central Auditorium"
                 className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none"
               />
             </div>
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">আয়োজক ক্লাব / বিভাগ</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Organizer Club / Dept</label>
             <input
               type="text"
               value={organizerName}
               onChange={(e) => setOrganizerName(e.target.value)}
+              placeholder="e.g. Computer Club"
               className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none"
             />
           </div>
@@ -223,7 +226,7 @@ export default function EditEventModal({
         {/* Dates */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">শুরুর সময়</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Start Time</label>
             <input
               type="datetime-local"
               required
@@ -234,7 +237,7 @@ export default function EditEventModal({
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">সমাপ্তির সময়</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">End Time</label>
             <input
               type="datetime-local"
               value={endAt}
@@ -244,7 +247,7 @@ export default function EditEventModal({
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">রেজিস্ট্রেশন ডেডলাইন</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Registration Deadline</label>
             <input
               type="datetime-local"
               value={registrationDeadline}
@@ -257,7 +260,7 @@ export default function EditEventModal({
         {/* Capacity & Fee */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">সর্বোচ্চ আসন সংখ্যা (Capacity)</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Seat Capacity</label>
             <input
               type="number"
               min="1"
@@ -268,7 +271,7 @@ export default function EditEventModal({
           </div>
 
           <div className="space-y-1">
-            <label className="font-bold text-slate-700 dark:text-slate-300">রেজিস্ট্রেশন ফি (টাকা, 0 = ফ্রি)</label>
+            <label className="font-bold text-slate-700 dark:text-slate-300">Registration Fee (BDT, 0 = Free)</label>
             <input
               type="number"
               min="0"
@@ -281,29 +284,31 @@ export default function EditEventModal({
 
         {/* Cover Image */}
         <div className="space-y-1">
-          <label className="font-bold text-slate-700 dark:text-slate-300">কভার ইমেজ লিংক (Image URL)</label>
+          <label className="font-bold text-slate-700 dark:text-slate-300">Cover Image URL</label>
           <input
-            type="url"
+            type="text"
             value={coverImage}
             onChange={(e) => setCoverImage(e.target.value)}
+            placeholder="https://images.unsplash.com/... or /uploads/..."
             className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none"
           />
         </div>
 
         {/* Description */}
         <div className="space-y-1">
-          <label className="font-bold text-slate-700 dark:text-slate-300">ইভেন্টের পূর্ণ বিবরণ</label>
+          <label className="font-bold text-slate-700 dark:text-slate-300">Full Description</label>
           <textarea
             rows={4}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            placeholder="Provide complete event details and guidelines..."
             className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none leading-relaxed"
           />
         </div>
 
         {/* Tags */}
         <div className="space-y-1">
-          <label className="font-bold text-slate-700 dark:text-slate-300">ট্যাগসমূহ (কমা দিয়ে আলাদা করুন)</label>
+          <label className="font-bold text-slate-700 dark:text-slate-300">Tags (separated by comma)</label>
           <input
             type="text"
             value={tags}
@@ -320,7 +325,7 @@ export default function EditEventModal({
             onClick={onClose}
             className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold transition"
           >
-            বাতিল
+            Cancel
           </button>
           <button
             type="submit"
@@ -328,7 +333,7 @@ export default function EditEventModal({
             className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white font-bold shadow-lg shadow-pink-500/25 transition flex items-center gap-2 disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
-            <span>{loading ? 'আপডেট হচ্ছে...' : 'পরিবর্তন সংরক্ষণ করুন'}</span>
+            <span>{loading ? 'Saving...' : 'Save Changes'}</span>
           </button>
         </div>
       </form>

@@ -134,7 +134,7 @@ export default function CreateEventFormModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="🎉 নতুন ইভেন্ট তৈরি করুন" maxWidth="3xl">
+    <Modal isOpen={isOpen} onClose={onClose} title="🎉 Create New Campus Event" maxWidth="3xl">
       <form onSubmit={handleSubmit} className="space-y-6">
         {error && (
           <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 text-xs">
@@ -145,23 +145,23 @@ export default function CreateEventFormModal({
         {/* Basic Info */}
         <div className="space-y-4">
           <h4 className="text-xs font-bold uppercase tracking-wider text-pink-600 dark:text-pink-400">
-            ১. প্রাথমিক তথ্য
+            1. Basic Information
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold mb-1">ইভেন্টের শিরোনাম (Title) *</label>
+              <label className="block text-xs font-semibold mb-1">Event Title *</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="যেমন: National University Tech Fest 2026"
+                placeholder="e.g. National University Tech Fest 2026"
                 required
                 className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs focus:border-pink-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1">ক্যাটাগরি (Category)</label>
+              <label className="block text-xs font-semibold mb-1">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
@@ -176,7 +176,7 @@ export default function CreateEventFormModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1">ডিপার্টমেন্ট</label>
+              <label className="block text-xs font-semibold mb-1">Department</label>
               <select
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
@@ -191,7 +191,7 @@ export default function CreateEventFormModal({
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold mb-1">কভার ইমেজ লিংক (Cover Image URL)</label>
+              <label className="block text-xs font-semibold mb-1">Cover Image URL</label>
               <input
                 type="text"
                 value={coverImage}
@@ -201,12 +201,12 @@ export default function CreateEventFormModal({
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold mb-1">বিস্তারিত বিবরণ (Description) *</label>
+              <label className="block text-xs font-semibold mb-1">Detailed Description *</label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                placeholder="ইভেন্টের বিস্তারিত শিডিউল, আকর্ষণ এবং উদ্দেশ্য লিখুন..."
+                placeholder="Write event schedule, highlights, objectives and rules..."
                 required
                 className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs focus:border-pink-500"
               />
@@ -217,11 +217,11 @@ export default function CreateEventFormModal({
         {/* Date, Location & Capacity */}
         <div className="space-y-4 pt-4 border-t border-slate-200 dark:border-slate-800">
           <h4 className="text-xs font-bold uppercase tracking-wider text-pink-600 dark:text-pink-400">
-            ২. সময়, স্থান ও আসন সংখ্যা
+            2. Date, Venue & Capacity
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs font-semibold mb-1">শুরুর তারিখ ও সময় *</label>
+              <label className="block text-xs font-semibold mb-1">Start Date & Time *</label>
               <input
                 type="datetime-local"
                 value={startAt}
@@ -232,7 +232,7 @@ export default function CreateEventFormModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1">শেষের তারিখ ও সময় *</label>
+              <label className="block text-xs font-semibold mb-1">End Date & Time *</label>
               <input
                 type="datetime-local"
                 value={endAt}
@@ -243,7 +243,7 @@ export default function CreateEventFormModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1">রেজিস্ট্রেশন ডেডলাইন *</label>
+              <label className="block text-xs font-semibold mb-1">Registration Deadline *</label>
               <input
                 type="datetime-local"
                 value={registrationDeadline}
@@ -254,7 +254,7 @@ export default function CreateEventFormModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1">ভেন্যু (Venue) *</label>
+              <label className="block text-xs font-semibold mb-1">Venue *</label>
               <input
                 type="text"
                 value={venue}
@@ -265,7 +265,7 @@ export default function CreateEventFormModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1">মোট আসন (Capacity) *</label>
+              <label className="block text-xs font-semibold mb-1">Capacity (Seats) *</label>
               <input
                 type="number"
                 value={capacity}
@@ -277,7 +277,7 @@ export default function CreateEventFormModal({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold mb-1">রেজিস্ট্রেশন ফি (৳)</label>
+              <label className="block text-xs font-semibold mb-1">Registration Fee (৳)</label>
               <input
                 type="number"
                 value={registrationFee}
@@ -297,14 +297,14 @@ export default function CreateEventFormModal({
             onClick={onClose}
             className="px-5 py-2.5 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
-            বাতিল করুন
+            Cancel
           </button>
           <button
             type="submit"
             disabled={loading}
             className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-6 py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-pink-500/25 transition disabled:opacity-50"
           >
-            {loading ? 'প্রক্রিয়াধীন...' : user?.role === 'admin' ? 'ইভেন্ট তৈরি ও পাবলিশ করুন' : 'অনুমোদনের জন্য জমা দিন'}
+            {loading ? 'Processing...' : user?.role === 'admin' ? 'Create & Publish Event' : 'Submit for Approval'}
           </button>
         </div>
       </form>

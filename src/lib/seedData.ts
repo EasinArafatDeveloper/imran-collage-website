@@ -54,7 +54,7 @@ export const seedClubs = [
     status: 'active' as const,
   },
   {
-    name: 'University Cultural Club (আমার অনুষ্ঠান)',
+    name: 'University Cultural Club',
     slug: 'cultural-club',
     description: 'Celebrating cultural heritage, music, dance, drama, and festive occasions across campus.',
     category: 'Cultural & Arts',
@@ -169,10 +169,10 @@ Food, exclusive t-shirt, swag pack, and official certificate included for all re
     ],
   },
   {
-    title: 'University Cultural Gala & Spring Fest (বসন্ত উৎসব ২০২৬)',
+    title: 'University Cultural Gala & Spring Fest 2026',
     slug: 'university-cultural-gala-spring-fest-2026',
     shortDescription: 'A vibrant evening of traditional music, poetry recitation, drama, dance, and live band performances.',
-    description: `Celebrate the colorful arrival of Spring with "আমার অনুষ্ঠান - বসন্ত উৎসব ২০২৬". Enjoy scintillating musical performances by prominent student vocalists, renowned folk artists, drama stage productions, and an electrifying headline band performance.
+    description: `Celebrate the colorful arrival of Spring with the University Cultural Gala & Spring Fest 2026. Enjoy scintillating musical performances by prominent student vocalists, renowned folk artists, drama stage productions, and an electrifying headline band performance.
 
 Dress code: Festive Traditional (Yellow, Red, Floral).
 Special food stalls with traditional delicacies will be open throughout the day.`,
@@ -207,7 +207,7 @@ Special food stalls with traditional delicacies will be open throughout the day.
     agenda: [
       { time: '03:00 PM', title: 'Gate Opening & Art Exhibition', speaker: 'Art Society' },
       { time: '04:30 PM', title: 'Traditional Folk & Rabindra Sangeet', speaker: 'Student Artists' },
-      { time: '06:30 PM', title: 'Drama: "নকশী কাঁথার মাঠ"', speaker: 'Drama Troupe' },
+      { time: '06:30 PM', title: 'Drama: "The Field of the Embroidered Quilt"', speaker: 'Drama Troupe' },
       { time: '08:00 PM', title: 'Headline Band Concert', speaker: 'Shironamhin' },
     ],
     requirements: ['Valid QR Pass', 'Traditional Attire encouraged'],

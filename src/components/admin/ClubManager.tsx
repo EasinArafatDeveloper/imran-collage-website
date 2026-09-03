@@ -77,7 +77,7 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
     setFormError('');
 
     if (!name.trim() || !presidentName.trim() || !description.trim()) {
-      setFormError('ক্লাবের নাম, প্রেসিডেন্টের নাম এবং ক্লাবের বিবরণ প্রদান আবশ্যক');
+      setFormError('Club name, president name, and club description are required');
       return;
     }
 
@@ -114,15 +114,15 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'success',
-          title: 'নতুন ক্লাব তৈরি সফল! 🏛️',
-          message: `"${data.data.name}" ক্লাবটি সফলভাবে তৈরি ও সক্রিয় করা হয়েছে।`,
-          confirmText: 'চমৎকার',
+          title: 'New Club Created! 🏛️',
+          message: `"${data.data.name}" has been successfully established and activated.`,
+          confirmText: 'Great',
         });
       } else {
-        setFormError(data.message || 'ক্লাব তৈরি ব্যর্থ হয়েছে');
+        setFormError(data.message || 'Failed to create club');
       }
     } catch (err: any) {
-      setFormError('সার্ভার ইরর হয়েছে।');
+      setFormError('A server error occurred.');
     } finally {
       setSaving(false);
     }
@@ -132,10 +132,10 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
     onTriggerAlert && onTriggerAlert({
       isOpen: true,
       type: 'confirm',
-      title: 'ক্লাব ডিলিট নিশ্চিত করুন!',
-      message: `আপনি কি "${club.name}" ক্লাবটি স্থায়ীভাবে মুছে ফেলতে চান?`,
-      confirmText: 'হ্যাঁ, ডিলিট করুন',
-      cancelText: 'বাতিল',
+      title: 'Confirm Club Deletion',
+      message: `Are you sure you want to permanently delete "${club.name}"?`,
+      confirmText: 'Yes, Delete',
+      cancelText: 'Cancel',
       onConfirm: async () => {
         try {
           const res = await fetch(`/api/clubs?id=${club._id}`, {
@@ -147,9 +147,9 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
             onTriggerAlert({
               isOpen: true,
               type: 'success',
-              title: 'ক্লাব মুছে ফেলা হয়েছে!',
-              message: `"${club.name}" সফলভাবে ডিলিট করা হয়েছে।`,
-              confirmText: 'ঠিক আছে',
+              title: 'Club Deleted!',
+              message: `"${club.name}" was successfully removed.`,
+              confirmText: 'OK',
             });
           }
         } catch (e) {
@@ -176,10 +176,10 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Building2 className="w-5 h-5 text-indigo-500" />
-            বিশ্ববিদ্যালয় ক্লাব ও ফোরাম কন্ট্রোল
+            University Clubs & Forums Control
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            নতুন ক্লাব তৈরি করুন, ক্লাবের তথ্য এডিট ও পরিচালনা করুন
+            Create student clubs, organize leadership directories, and manage club profiles
           </p>
         </div>
 
@@ -188,7 +188,7 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
           className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-pink-500/25 transition flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          <span>+ নতুন ক্লাব যুক্ত করুন</span>
+          <span>+ Add New Club</span>
         </button>
       </div>
 
@@ -200,7 +200,7 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="ক্লাবের নাম বা ক্যাটাগরি দিয়ে খুঁজুন..."
+            placeholder="Search by club name or category..."
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-pink-500"
           />
         </div>
@@ -208,7 +208,7 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
         <button
           onClick={fetchClubs}
           className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition shrink-0"
-          title="রিফ্রেশ করুন"
+          title="Refresh Clubs"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
         </button>
@@ -218,14 +218,14 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
       {loading ? (
         <div className="py-20 text-center text-slate-500 flex flex-col items-center gap-2">
           <div className="w-7 h-7 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-semibold">ক্লাব তালিকা লোড হচ্ছে...</span>
+          <span className="text-xs font-semibold">Loading clubs list...</span>
         </div>
       ) : filteredClubs.length === 0 ? (
         <div className="p-12 text-center rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm dark:shadow-none">
           <Building2 className="w-12 h-12 text-slate-400 dark:text-slate-600 mx-auto" />
-          <h3 className="font-bold text-slate-900 dark:text-white text-sm">বর্তমানে কোনো সক্রিয় ক্লাব নেই</h3>
+          <h3 className="font-bold text-slate-900 dark:text-white text-sm">No active clubs found</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            উপরে "+ নতুন ক্লাব যুক্ত করুন" বাটনে ক্লিক করে বিশ্ববিদ্যালয়ে নতুন ক্লাব গঠন করুন।
+            Click "+ Add New Club" above to establish a new student club or department society.
           </p>
         </div>
       ) : (
@@ -244,7 +244,7 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
                 <button
                   onClick={() => handleDeleteClub(club)}
                   className="absolute top-3 right-3 p-1.5 rounded-lg bg-rose-600/90 hover:bg-rose-600 text-white shadow-md transition"
-                  title="ক্লাব মুছে ফেলুন"
+                  title="Delete Club"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -272,9 +272,9 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
                 </div>
 
                 <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 space-y-1">
-                  <p>👤 প্রেসিডেন্ট: <strong className="text-slate-900 dark:text-white">{club.presidentName}</strong></p>
-                  <p>🏛️ বিভাগ: <span>{club.department || 'All Departments'}</span></p>
-                  <p>📅 প্রতিষ্ঠাকাল: <span>{club.establishedYear}</span></p>
+                  <p>👤 President: <strong className="text-slate-900 dark:text-white">{club.presidentName}</strong></p>
+                  <p>🏛️ Department: <span>{club.department || 'All Departments'}</span></p>
+                  <p>📅 Established: <span>{club.establishedYear}</span></p>
                 </div>
               </div>
             </div>
@@ -286,10 +286,10 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
       <Modal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        title="🏛️ নতুন বিশ্ববিদ্যালয় ক্লাব গঠন করুন"
+        title="🏛️ Establish New University Club"
         maxWidth="xl"
       >
-        <form onSubmit={handleAddClub} className="space-y-4 text-xs text-slate-700 dark:text-slate-300">
+        <form onSubmit={handleAddClub} noValidate className="space-y-4 text-xs text-slate-700 dark:text-slate-300">
           {formError && (
             <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 font-semibold flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
@@ -300,7 +300,7 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
           {/* Club Name */}
           <div className="space-y-1">
             <label className="font-bold text-slate-700 dark:text-slate-300">
-              ক্লাবের পূর্ণ নাম <span className="text-rose-500">*</span>
+              Full Club Name <span className="text-rose-500">*</span>
             </label>
             <input
               type="text"
@@ -315,11 +315,11 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
           {/* Category & Department */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-bold text-slate-700 dark:text-slate-300">ক্যাটাগরি</label>
+              <label className="font-bold text-slate-700 dark:text-slate-300">Category</label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
               >
                 {categories.map((cat) => (
                   <option key={cat} value={cat}>
@@ -330,12 +330,12 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-slate-700 dark:text-slate-300">অধিভুক্ত ডিপার্টমেন্ট</label>
+              <label className="font-bold text-slate-700 dark:text-slate-300">Affiliated Department</label>
               <input
                 type="text"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                placeholder="e.g. CSE"
+                placeholder="e.g. Computer Science & Engineering"
                 className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
               />
             </div>
@@ -345,20 +345,20 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className="font-bold text-slate-700 dark:text-slate-300">
-                প্রেসিডেন্ট / প্রধান সমন্বয়ক <span className="text-rose-500">*</span>
+                President / Lead Coordinator <span className="text-rose-500">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={presidentName}
                 onChange={(e) => setPresidentName(e.target.value)}
-                placeholder="প্রেসিডেন্টের নাম"
+                placeholder="President's Full Name"
                 className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-slate-700 dark:text-slate-300">যোগাযোগ ইমেইল</label>
+              <label className="font-bold text-slate-700 dark:text-slate-300">Contact Email</label>
               <input
                 type="email"
                 value={contactEmail}
@@ -372,23 +372,23 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
           {/* Logo & Cover URLs */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <label className="font-bold text-slate-700 dark:text-slate-300">লোগো ইমেজ লিংক (URL)</label>
+              <label className="font-bold text-slate-700 dark:text-slate-300">Logo Image URL</label>
               <input
-                type="url"
+                type="text"
                 value={logo}
                 onChange={(e) => setLogo(e.target.value)}
-                placeholder="https://..."
+                placeholder="https://... or /uploads/..."
                 className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
               />
             </div>
 
             <div className="space-y-1">
-              <label className="font-bold text-slate-700 dark:text-slate-300">কভার ব্যানার লিংক (URL)</label>
+              <label className="font-bold text-slate-700 dark:text-slate-300">Cover Banner URL</label>
               <input
-                type="url"
+                type="text"
                 value={coverImage}
                 onChange={(e) => setCoverImage(e.target.value)}
-                placeholder="https://..."
+                placeholder="https://... or /uploads/..."
                 className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
               />
             </div>
@@ -397,14 +397,14 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
           {/* Description */}
           <div className="space-y-1">
             <label className="font-bold text-slate-700 dark:text-slate-300">
-              ক্লাবের বিবরণ ও লক্ষ্য <span className="text-rose-500">*</span>
+              Club Mission & Description <span className="text-rose-500">*</span>
             </label>
             <textarea
               rows={3}
               required
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="ক্লাবের কার্যক্রম ও উদ্দেশ্য সম্পর্কে লিখুন..."
+              placeholder="Write about the club's activities, mission, and joining info..."
               className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500"
             />
           </div>
@@ -416,7 +416,7 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
               onClick={() => setIsAddModalOpen(false)}
               className="px-5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold transition"
             >
-              বাতিল
+              Cancel
             </button>
             <button
               type="submit"
@@ -424,7 +424,7 @@ export default function ClubManager({ onTriggerAlert }: ClubManagerProps) {
               className="px-6 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white font-bold shadow-lg shadow-pink-500/25 transition flex items-center gap-2 disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              <span>{saving ? 'তৈরি হচ্ছে...' : 'ক্লাব তৈরি করুন'}</span>
+              <span>{saving ? 'Creating...' : 'Create Club'}</span>
             </button>
           </div>
         </form>

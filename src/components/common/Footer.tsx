@@ -57,27 +57,27 @@ export default function Footer({ setActiveTab }: { setActiveTab?: (tab: string) 
           {/* Quick Links */}
           <div className="space-y-3">
             <h4 className="font-bold text-xs uppercase tracking-wider text-slate-900 dark:text-white">
-              দ্রুত লিঙ্কসমূহ
+              Quick Links
             </h4>
             <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
               <li>
                 <button onClick={() => setActiveTab && setActiveTab('events')} className="hover:text-pink-500 transition">
-                  {settings.navEventsText || 'সকল ইভেন্ট দেখুন'}
+                  {settings.navEventsText || 'Explore Events'}
                 </button>
               </li>
               <li>
                 <button onClick={() => setActiveTab && setActiveTab('moments')} className="hover:text-pink-500 transition">
-                  {settings.navMomentsText || 'স্মৃতি গ্যালারি'}
+                  {settings.navMomentsText || 'Moments Gallery'}
                 </button>
               </li>
               <li>
                 <button onClick={() => setActiveTab && setActiveTab('clubs')} className="hover:text-pink-500 transition">
-                  {settings.navClubsText || 'বিশ্ববিদ্যালয় ক্লাব সমূহ'}
+                  {settings.navClubsText || 'University Clubs'}
                 </button>
               </li>
               <li>
                 <button onClick={() => setActiveTab && setActiveTab('enrolled')} className="hover:text-pink-500 transition">
-                  {settings.navEnrolledText || 'নিবন্ধিত শিক্ষার্থী তালিকা'}
+                  {settings.navEnrolledText || 'Enrolled Members'}
                 </button>
               </li>
             </ul>
@@ -86,27 +86,27 @@ export default function Footer({ setActiveTab }: { setActiveTab?: (tab: string) 
           {/* Modules */}
           <div className="space-y-3">
             <h4 className="font-bold text-xs uppercase tracking-wider text-slate-900 dark:text-white">
-              সার্ভিস সমূহ
+              Services & Portals
             </h4>
             <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
               <li>
                 <button onClick={() => setActiveTab && setActiveTab('my-events')} className="hover:text-pink-500 transition">
-                  ডিজিটাল কিউআর টিকেট পাস
+                  Digital QR Ticket Pass
                 </button>
               </li>
               <li>
                 <button onClick={() => setActiveTab && setActiveTab('verify-cert')} className="hover:text-pink-500 transition">
-                  সার্টিফিকেট ভেরিফিকেশন পোর্টাল
+                  Certificate Verification
                 </button>
               </li>
               <li>
                 <button onClick={() => setActiveTab && setActiveTab('analytics')} className="hover:text-pink-500 transition">
-                  পার্টিসিপেশন অ্যানালিটিক্স
+                  Participation Analytics
                 </button>
               </li>
               <li>
                 <button onClick={() => setActiveTab && setActiveTab('organizer-panel')} className="hover:text-pink-500 transition">
-                  লাইভ কিউআর এটেন্ডেন্স স্ক্যানার
+                  Live QR Attendance Scanner
                 </button>
               </li>
             </ul>
@@ -115,7 +115,7 @@ export default function Footer({ setActiveTab }: { setActiveTab?: (tab: string) 
           {/* Contact info */}
           <div className="space-y-3">
             <h4 className="font-bold text-xs uppercase tracking-wider text-slate-900 dark:text-white">
-              যোগাযোগ ও সহায়তা
+              Contact & Support
             </h4>
             <div className="space-y-2 text-xs text-slate-600 dark:text-slate-400">
               <p className="flex items-center gap-2">

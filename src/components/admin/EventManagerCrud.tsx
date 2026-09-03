@@ -79,10 +79,10 @@ export default function EventManagerCrud({
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Calendar className="w-5 h-5 text-pink-500" />
-            ইভেন্ট ম্যানেজমেন্ট ও পূর্ণ নিয়ন্ত্রণ (Full CRUD)
+            Events Management & Controls (Full CRUD)
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            নতুন ইভেন্ট যুক্ত করুন, তথ্য এডিট করুন, অনুমোদন দিন অথবা প্রয়োজনমতো মুছে ফেলুন
+            Add new events, edit information, approve submissions, or remove events as needed
           </p>
         </div>
 
@@ -91,7 +91,7 @@ export default function EventManagerCrud({
           className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-pink-500/25 transition flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          <span>+ নতুন ইভেন্ট তৈরি করুন</span>
+          <span>+ Create New Event</span>
         </button>
       </div>
 
@@ -103,7 +103,7 @@ export default function EventManagerCrud({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="ইভেন্টের নাম বা ভেন্যু দিয়ে খুঁজুন..."
+            placeholder="Search by event title, venue, or organizer..."
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-pink-500"
           />
         </div>
@@ -114,7 +114,7 @@ export default function EventManagerCrud({
             onChange={(e) => setCategoryFilter(e.target.value)}
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-700 dark:text-slate-300 font-semibold focus:outline-none focus:border-pink-500"
           >
-            <option value="all">সকল ক্যাটাগরি (All Categories)</option>
+            <option value="all">All Categories</option>
             {categories.map((cat) => (
               <option key={cat} value={cat}>
                 {cat}
@@ -129,7 +129,7 @@ export default function EventManagerCrud({
             onChange={(e) => setStatusFilter(e.target.value)}
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-700 dark:text-slate-300 font-semibold focus:outline-none focus:border-pink-500"
           >
-            <option value="all">সকল স্ট্যাটাস (All Status)</option>
+            <option value="all">All Statuses</option>
             <option value="published">🟢 Published</option>
             <option value="pending_approval">🟡 Pending Approval</option>
             <option value="draft">⚪ Draft</option>
@@ -140,7 +140,7 @@ export default function EventManagerCrud({
           <button
             onClick={onRefresh}
             className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition shrink-0"
-            title="রিফ্রেশ"
+            title="Refresh"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -153,13 +153,13 @@ export default function EventManagerCrud({
           <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
             <thead className="bg-slate-50 dark:bg-slate-950 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
               <tr>
-                <th className="py-3.5 px-4">ইভেন্ট তথ্য</th>
-                <th className="py-3.5 px-4">ক্যাটাগরি</th>
-                <th className="py-3.5 px-4">তারিখ ও সময়</th>
-                <th className="py-3.5 px-4">রেজিস্ট্রেশন ও ক্যাপাসিটি</th>
-                <th className="py-3.5 px-4">ফি (Fee)</th>
-                <th className="py-3.5 px-4">স্ট্যাটাস</th>
-                <th className="py-3.5 px-4 text-right">অ্যাকশন (Actions)</th>
+                <th className="py-3.5 px-4">Event Details</th>
+                <th className="py-3.5 px-4">Category</th>
+                <th className="py-3.5 px-4">Date & Time</th>
+                <th className="py-3.5 px-4">Registration & Capacity</th>
+                <th className="py-3.5 px-4">Fee</th>
+                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -168,14 +168,14 @@ export default function EventManagerCrud({
                   <td colSpan={7} className="py-12 text-center text-slate-500">
                     <div className="flex flex-col items-center gap-2">
                       <div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
-                      <span>ইভেন্ট তালিকা লোড হচ্ছে...</span>
+                      <span>Loading events list...</span>
                     </div>
                   </td>
                 </tr>
               ) : filteredEvents.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-slate-500">
-                    কোন ইভেন্ট পাওয়া যায়নি।
+                    No events found.
                   </td>
                 </tr>
               ) : (
@@ -219,7 +219,7 @@ export default function EventManagerCrud({
                       <div className="space-y-1">
                         <div className="flex items-center justify-between text-[10px] font-bold">
                           <span className="text-slate-900 dark:text-white">{evt.registeredCount || 0}</span>
-                          <span className="text-slate-400 dark:text-slate-500">/ {evt.capacity} সীট</span>
+                          <span className="text-slate-400 dark:text-slate-500">/ {evt.capacity} Seats</span>
                         </div>
                         <div className="w-24 bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 overflow-hidden">
                           <div
@@ -238,7 +238,7 @@ export default function EventManagerCrud({
                         <span className="text-emerald-600 dark:text-emerald-400">৳ {evt.registrationFee}</span>
                       ) : (
                         <span className="text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">
-                          ফ্রি
+                          Free
                         </span>
                       )}
                     </td>
@@ -272,21 +272,21 @@ export default function EventManagerCrud({
                         <button
                           onClick={() => onViewEvent(evt)}
                           className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition"
-                          title="বিবরণ দেখুন"
+                          title="View Details"
                         >
                           <Eye className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => onOpenEditModal(evt)}
                           className="p-1.5 rounded-lg bg-pink-500/10 hover:bg-pink-500/20 text-pink-600 dark:text-pink-400 border border-pink-500/30 transition"
-                          title="এডিট করুন"
+                          title="Edit Event"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => onDeleteEvent(evt._id, evt.title)}
                           className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 transition"
-                          title="ইভেন্ট ডিলিট করুন"
+                          title="Delete Event"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

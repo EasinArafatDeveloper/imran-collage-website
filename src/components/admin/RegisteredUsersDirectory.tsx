@@ -70,9 +70,9 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'success',
-          title: 'রোল পরিবর্তন সফল!',
-          message: `ব্যবহারকারীর রোল পরিবর্তন করে "${newRole === 'admin' ? 'এডমিন' : 'শিক্ষার্থী'}" করা হয়েছে।`,
-          confirmText: 'ঠিক আছে',
+          title: 'Role Updated!',
+          message: `User role changed to "${newRole === 'admin' ? 'Administrator' : 'Student'}".`,
+          confirmText: 'OK',
         });
       }
     } catch (e) {
@@ -97,9 +97,9 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'success',
-          title: 'স্ট্যাটাস আপডেট সফল!',
-          message: `একাউন্ট স্ট্যাটাস "${nextStatus === 'active' ? 'সক্রিয় (Active)' : 'স্থগিত (Suspended)'}" করা হয়েছে।`,
-          confirmText: 'ঠিক আছে',
+          title: 'Status Updated!',
+          message: `Account status updated to "${nextStatus === 'active' ? 'Active' : 'Suspended'}".`,
+          confirmText: 'OK',
         });
       }
     } catch (e) {
@@ -111,7 +111,7 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
 
   const handleDeleteUser = (userItem: any) => {
     if (!onTriggerAlert) {
-      if (confirm(`আপনি কি সত্যিই "${userItem.name}" একাউন্টটি স্থায়ীভাবে ডিলিট করতে চান?`)) {
+      if (confirm(`Are you sure you want to permanently delete "${userItem.name}"?`)) {
         executeDelete(userItem._id);
       }
       return;
@@ -120,10 +120,10 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
     onTriggerAlert({
       isOpen: true,
       type: 'confirm',
-      title: 'ইউজার একাউন্ট ডিলিট নিশ্চিত করুন!',
-      message: `আপনি কি নিশ্চিত যে "${userItem.name}" (${userItem.email}) একাউন্টটি এবং তার সম্পর্কিত সমস্ত প্রোফাইল ও ডাটা স্থায়ীভাবে মুছে ফেলতে চান? এটি পুনরুদ্ধার করা যাবে না।`,
-      confirmText: 'হ্যাঁ, ডিলিট করুন',
-      cancelText: 'বাতিল',
+      title: 'Confirm Account Deletion',
+      message: `Are you sure you want to permanently delete "${userItem.name}" (${userItem.email}) and all associated profile records? This action cannot be undone.`,
+      confirmText: 'Yes, Delete',
+      cancelText: 'Cancel',
       onConfirm: async () => {
         await executeDelete(userItem._id);
       },
@@ -142,17 +142,17 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'success',
-          title: 'ইউজার মুছে ফেলা হয়েছে!',
-          message: 'ব্যবহারকারীর একাউন্ট ও সকল ডাটা সফলভাবে ডেটাবেস থেকে মুছে ফেলা হয়েছে।',
-          confirmText: 'ঠিক আছে',
+          title: 'User Deleted!',
+          message: 'User account and profile data have been permanently removed.',
+          confirmText: 'OK',
         });
       } else {
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'error',
-          title: 'ডিলিট ব্যর্থ হয়েছে',
-          message: data.message || 'ইউজার ডিলিট করা যায়নি।',
-          confirmText: 'বন্ধ করুন',
+          title: 'Deletion Failed',
+          message: data.message || 'Unable to delete user.',
+          confirmText: 'Close',
         });
       }
     } catch (e) {
@@ -172,19 +172,19 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Users className="w-5 h-5 text-pink-500" />
-            নিবন্ধিত সকল শিক্ষার্থী ও ইউজার ডিরেক্টরি
+            Registered Students & Users Directory
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            বিশ্ববিদ্যালয়ে একাউন্ট তৈরি করা সকল শিক্ষার্থী ও এডমিনদের তালিকা, তথ্য ও একাউন্ট ম্যানেজমেন্ট
+            Full directory and administrative control for all student profiles and campus administrators
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="px-3.5 py-1.5 rounded-xl bg-pink-500/10 border border-pink-500/20 text-pink-600 dark:text-pink-400 text-xs font-bold">
-            👨‍🎓 মোট শিক্ষার্থী: {studentCount}
+            👨‍🎓 Total Students: {studentCount}
           </div>
           <div className="px-3.5 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-bold">
-            🛡️ এডমিন: {adminCount}
+            🛡️ Admins: {adminCount}
           </div>
         </div>
       </div>
@@ -197,7 +197,7 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="নাম, রোল/স্টুডেন্ট আইডি বা ইমেইল দিয়ে সার্চ করুন..."
+            placeholder="Search by name, student ID, or email..."
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-pink-500"
           />
         </form>
@@ -208,9 +208,9 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
             onChange={(e) => setRoleFilter(e.target.value)}
             className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-700 dark:text-slate-300 font-semibold focus:outline-none focus:border-pink-500"
           >
-            <option value="all">সকল রোল (All Roles)</option>
-            <option value="student">👨‍🎓 শুধুমাত্র শিক্ষার্থী (Student)</option>
-            <option value="admin">🛡️ শুধুমাত্র এডমিন (Admin)</option>
+            <option value="all">All Roles</option>
+            <option value="student">👨‍🎓 Students Only</option>
+            <option value="admin">🛡️ Admins Only</option>
           </select>
 
           <select
@@ -218,7 +218,7 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
             onChange={(e) => setStatusFilter(e.target.value)}
             className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-700 dark:text-slate-300 font-semibold focus:outline-none focus:border-pink-500"
           >
-            <option value="all">সকল স্ট্যাটাস</option>
+            <option value="all">All Statuses</option>
             <option value="active">🟢 Active</option>
             <option value="suspended">🔴 Suspended</option>
           </select>
@@ -226,7 +226,7 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
           <button
             onClick={fetchUsers}
             className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition"
-            title="রিফ্রেশ করুন"
+            title="Refresh Directory"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -239,13 +239,13 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
           <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
             <thead className="bg-slate-50 dark:bg-slate-950 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
               <tr>
-                <th className="py-3.5 px-4">ইউজার ও শিক্ষার্থী</th>
-                <th className="py-3.5 px-4">স্টুডেন্ট আইডি / রোল</th>
-                <th className="py-3.5 px-4">ডিপার্টমেন্ট</th>
-                <th className="py-3.5 px-4">যোগদানের তারিখ</th>
-                <th className="py-3.5 px-4">রোল (RBAC)</th>
-                <th className="py-3.5 px-4">স্ট্যাটাস</th>
-                <th className="py-3.5 px-4 text-right">অ্যাকশন</th>
+                <th className="py-3.5 px-4">User & Student</th>
+                <th className="py-3.5 px-4">Student ID / Roll</th>
+                <th className="py-3.5 px-4">Department</th>
+                <th className="py-3.5 px-4">Joined Date</th>
+                <th className="py-3.5 px-4">Role (RBAC)</th>
+                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -254,14 +254,14 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
                   <td colSpan={7} className="py-12 text-center text-slate-500">
                     <div className="flex flex-col items-center gap-2">
                       <div className="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
-                      <span>ইউজার তালিকা লোড হচ্ছে...</span>
+                      <span>Loading user directory...</span>
                     </div>
                   </td>
                 </tr>
               ) : users.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-slate-500">
-                    কোন ব্যবহারকারী পাওয়া যায়নি।
+                    No registered users found.
                   </td>
                 </tr>
               ) : (
@@ -356,10 +356,10 @@ export default function RegisteredUsersDirectory({ onTriggerAlert }: RegisteredU
                         onClick={() => handleDeleteUser(item)}
                         disabled={actionLoadingId === item._id}
                         className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 transition inline-flex items-center gap-1.5"
-                        title="ইউজার ডিলিট করুন"
+                        title="Delete User"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
-                        <span className="text-[10px] font-bold">ডিলিট</span>
+                        <span className="text-[10px] font-bold">Delete</span>
                       </button>
                     </td>
                   </tr>

@@ -127,7 +127,7 @@ export default function AttendanceManager({ events = [], onOpenScanner }: Attend
       {/* Event Selector & Actions Bar */}
       <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
         <div className="flex-1">
-          <label className="block text-xs font-semibold text-slate-500 mb-1">ইভেন্ট নির্বাচন করুন</label>
+          <label className="block text-xs font-semibold text-slate-500 mb-1">Select Event</label>
           <select
             value={selectedEventId}
             onChange={(e) => setSelectedEventId(e.target.value)}
@@ -148,7 +148,7 @@ export default function AttendanceManager({ events = [], onOpenScanner }: Attend
               className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md shadow-pink-500/20 transition flex items-center gap-1.5"
             >
               <Scan className="w-4 h-4" />
-              লাইভ কিউআর স্ক্যানার
+              Live QR Scanner
             </button>
           )}
 
@@ -159,7 +159,7 @@ export default function AttendanceManager({ events = [], onOpenScanner }: Attend
             title="Issue official certificates for all verified attended students"
           >
             <Award className="w-4 h-4" />
-            {issuingCerts ? 'সার্টিফিকেট ইস্যু হচ্ছে...' : 'সার্টিফিকেট ইস্যু করুন'}
+            {issuingCerts ? 'Issuing Certificates...' : 'Issue Certificates'}
           </button>
 
           <button
@@ -167,7 +167,7 @@ export default function AttendanceManager({ events = [], onOpenScanner }: Attend
             className="bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold border border-slate-200 dark:border-slate-700 transition flex items-center gap-1.5"
           >
             <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
-            CSV এক্সপোর্ট
+            Export CSV
           </button>
         </div>
       </div>
@@ -183,21 +183,21 @@ export default function AttendanceManager({ events = [], onOpenScanner }: Attend
       {data?.stats && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="glass-card p-4 text-center">
-            <span className="text-[11px] text-slate-400">মোট নিবন্ধিত (Registered)</span>
+            <span className="text-[11px] text-slate-400">Total Registered</span>
             <p className="text-2xl font-black text-slate-900 dark:text-white mt-1">
-              {data.stats.totalRegistered} জন
+              {data.stats.totalRegistered}
             </p>
           </div>
           <div className="glass-card p-4 text-center border-emerald-500/30">
-            <span className="text-[11px] text-emerald-500 font-semibold">উপস্থিত (Attended)</span>
-            <p className="text-2xl font-black text-emerald-500 mt-1">{data.stats.totalAttended} জন</p>
+            <span className="text-[11px] text-emerald-500 font-semibold">Attended</span>
+            <p className="text-2xl font-black text-emerald-500 mt-1">{data.stats.totalAttended}</p>
           </div>
           <div className="glass-card p-4 text-center">
-            <span className="text-[11px] text-rose-500 font-semibold">অনুপস্থিত (Absent)</span>
-            <p className="text-2xl font-black text-rose-500 mt-1">{data.stats.totalAbsent} জন</p>
+            <span className="text-[11px] text-rose-500 font-semibold">Absent</span>
+            <p className="text-2xl font-black text-rose-500 mt-1">{data.stats.totalAbsent}</p>
           </div>
           <div className="glass-card p-4 text-center">
-            <span className="text-[11px] text-purple-500 font-semibold">উপস্থিতির হার (%)</span>
+            <span className="text-[11px] text-purple-500 font-semibold">Attendance Rate (%)</span>
             <p className="text-2xl font-black text-purple-500 mt-1">{data.stats.attendanceRate}</p>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default function AttendanceManager({ events = [], onOpenScanner }: Attend
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="রেজিস্ট্রেশন কোড, নাম বা স্টুডেন্ট আইডি দিয়ে ফিল্টার করুন..."
+            placeholder="Filter by booking code, name, or student ID..."
             className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:border-pink-500"
           />
         </div>
@@ -220,11 +220,11 @@ export default function AttendanceManager({ events = [], onOpenScanner }: Attend
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 uppercase font-semibold border-b border-slate-200 dark:border-slate-800">
               <tr>
-                <th className="p-4">কোড ও শিক্ষার্থী</th>
-                <th className="p-4">স্টুডেন্ট আইডি ও ডিপার্টমেন্ট</th>
-                <th className="p-4">ফি ও পেমেন্ট</th>
-                <th className="p-4">উপস্থিতি স্ট্যাটাস</th>
-                <th className="p-4 text-right">অ্যাকশন</th>
+                <th className="p-4">Code & Student</th>
+                <th className="p-4">Student ID & Department</th>
+                <th className="p-4">Fee & Payment</th>
+                <th className="p-4">Attendance Status</th>
+                <th className="p-4 text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
@@ -249,12 +249,12 @@ export default function AttendanceManager({ events = [], onOpenScanner }: Attend
                     {r.status === 'attended' ? (
                       <span className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 w-fit">
                         <CheckCircle2 className="w-3 h-3" />
-                        উপস্থিত (Checked-in)
+                        Checked In
                       </span>
                     ) : (
                       <span className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold flex items-center gap-1 w-fit">
                         <Clock className="w-3 h-3" />
-                        অপেক্ষমান (Registered)
+                        Pending (Registered)
                       </span>
                     )}
                   </td>
@@ -264,10 +264,10 @@ export default function AttendanceManager({ events = [], onOpenScanner }: Attend
                         onClick={() => handleManualCheckIn(r._id)}
                         className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg shadow-sm"
                       >
-                        উপস্থিতি মার্ক করুন
+                        Mark Present
                       </button>
                     ) : (
-                      <span className="text-[10px] text-slate-400">চেক-ইন সম্পন্ন</span>
+                      <span className="text-[10px] text-slate-400">Checked In</span>
                     )}
                   </td>
                 </tr>

@@ -20,14 +20,14 @@ export async function POST(request: NextRequest) {
 
     if (!name || !email || !password) {
       return NextResponse.json(
-        { success: false, message: 'নাম, ইমেইল এবং পাসওয়ার্ড আবশ্যক (Name, email, and password are required)' },
+        { success: false, message: 'Name, email, and password are required' },
         { status: 400 }
       );
     }
 
     if (password.length < 6) {
       return NextResponse.json(
-        { success: false, message: 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে (Password must be at least 6 characters)' },
+        { success: false, message: 'Password must be at least 6 characters' },
         { status: 400 }
       );
     }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return NextResponse.json(
-        { success: false, message: 'এই ইমেইল দিয়ে ইতোমধ্যে একটি একাউন্ট খোলা হয়েছে।' },
+        { success: false, message: 'An account with this email address already exists.' },
         { status: 400 }
       );
     }
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     const existingProfile = await StudentProfile.findOne({ studentId: cleanStudentId });
     if (existingProfile) {
       return NextResponse.json(
-        { success: false, message: 'এই স্টুডেন্ট আইডি (Student ID) ইতোমধ্যে রেজিস্টার্ড রয়েছে।' },
+        { success: false, message: 'This Student ID is already registered.' },
         { status: 400 }
       );
     }
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json({
       success: true,
-      message: 'রেজিস্ট্রেশন সফল হয়েছে! স্বাগতম।',
+      message: 'Registration successful! Welcome.',
       token,
       user: {
         _id: newUser._id.toString(),
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Registration error:', error);
     return NextResponse.json(
-      { success: false, message: 'রেজিস্ট্রেশনে সমস্যা হয়েছে। আবার চেষ্টা করুন।', error: error.message },
+      { success: false, message: 'Registration failed due to a server issue. Please try again.', error: error.message },
       { status: 500 }
     );
   }

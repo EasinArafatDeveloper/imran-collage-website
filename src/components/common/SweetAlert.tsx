@@ -37,8 +37,8 @@ export default function SweetAlertModal({ alert, onClose }: SweetAlertModalProps
     type = 'info',
     title,
     message,
-    confirmText = 'ঠিক আছে',
-    cancelText = 'বাতিল',
+    confirmText = 'OK',
+    cancelText = 'Cancel',
     onConfirm,
     onCancel,
   } = alert;

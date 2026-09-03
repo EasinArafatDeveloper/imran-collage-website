@@ -83,8 +83,8 @@ export default function EventParticipantsDirectory({
       onTriggerAlert && onTriggerAlert({
         isOpen: true,
         type: 'warning',
-        title: 'এক্সপোর্ট করার ডাটা নেই',
-        message: 'এক্সপোর্ট করার মতো কোনো পার্টিসিপ্যান্ট রেকর্ড পাওয়া যায়নি।',
+        title: 'No Data to Export',
+        message: 'No participant records match the current export criteria.',
       });
       return;
     }
@@ -108,15 +108,15 @@ export default function EventParticipantsDirectory({
     onTriggerAlert && onTriggerAlert({
       isOpen: true,
       type: 'success',
-      title: 'CSV ফাইল ডাউনলোড সম্পন্ন!',
-      message: `${csvData.length} জন পার্টিসিপ্যান্টের বিস্তারিত তথ্য CSV ফাইলে এক্সপোর্ট করা হয়েছে।`,
-      confirmText: 'ধন্যবাদ',
+      title: 'CSV Export Completed!',
+      message: `Exported ${csvData.length} participant records to CSV file.`,
+      confirmText: 'Great',
     });
   };
 
   const handleCancelRegistration = (regItem: any) => {
     if (!onTriggerAlert) {
-      if (confirm(`আপনি কি "${regItem.studentName}"-এর "${regItem.eventTitle}" ইভেন্টের রেজিস্ট্রেশন বাতিল করতে চান?`)) {
+      if (confirm(`Are you sure you want to cancel the registration for "${regItem.studentName}" on event "${regItem.eventTitle}"?`)) {
         executeCancel(regItem._id);
       }
       return;
@@ -125,10 +125,10 @@ export default function EventParticipantsDirectory({
     onTriggerAlert({
       isOpen: true,
       type: 'confirm',
-      title: 'রেজিস্ট্রেশন বাতিল নিশ্চিত করুন!',
-      message: `আপনি কি নিশ্চিত যে "${regItem.studentName}" (${regItem.studentId})-এর "${regItem.eventTitle}" ইভেন্টের রেজিস্ট্রেশন বাতিল করবেন? ওয়েটলিস্টে কেউ থাকলে সে স্বয়ংক্রিয়ভাবে প্রমোট হবে।`,
-      confirmText: 'হ্যাঁ, বাতিল করুন',
-      cancelText: 'ফিরে যান',
+      title: 'Confirm Registration Cancellation',
+      message: `Are you sure you want to cancel the registration for "${regItem.studentName}" (${regItem.studentId}) on "${regItem.eventTitle}"? Any waitlisted students will be automatically promoted.`,
+      confirmText: 'Yes, Cancel Registration',
+      cancelText: 'Go Back',
       onConfirm: async () => {
         await executeCancel(regItem._id);
       },
@@ -149,16 +149,16 @@ export default function EventParticipantsDirectory({
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'success',
-          title: 'রেজিস্ট্রেশন বাতিল করা হয়েছে',
-          message: 'রেজিস্ট্রেশনটি সফলভাবে বাতিল করা হয়েছে এবং ইভেন্টের সীট আপডেট করা হয়েছে।',
-          confirmText: 'ঠিক আছে',
+          title: 'Registration Cancelled',
+          message: 'The registration was cancelled and event capacity has been updated.',
+          confirmText: 'OK',
         });
       } else {
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'error',
-          title: 'বাতিল ব্যর্থ হয়েছে',
-          message: data.message || 'রেজিস্ট্রেশন বাতিল করা যায়নি।',
+          title: 'Cancellation Failed',
+          message: data.message || 'Unable to cancel registration.',
         });
       }
     } catch (e) {
@@ -187,16 +187,16 @@ export default function EventParticipantsDirectory({
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'success',
-          title: 'উপস্থিতি নিশ্চিত করা হয়েছে! 🎉',
-          message: `${regItem.studentName} (${regItem.studentId})-এর উপস্থিতি সফলভাবে রেকর্ড করা হয়েছে।`,
-          confirmText: 'ঠিক আছে',
+          title: 'Check-in Verified! 🎉',
+          message: `Attendance for ${regItem.studentName} (${regItem.studentId}) has been successfully recorded.`,
+          confirmText: 'OK',
         });
       } else {
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'warning',
-          title: 'উপস্থিতি রেকর্ডে তথ্য',
-          message: data.message || 'উপস্থিতি দেওয়া সম্ভব হয়নি।',
+          title: 'Check-in Notice',
+          message: data.message || 'Unable to record attendance.',
         });
       }
     } catch (e) {
@@ -213,10 +213,10 @@ export default function EventParticipantsDirectory({
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Ticket className="w-5 h-5 text-purple-500" />
-            ইভেন্ট পার্টিসিপ্যান্ট ও এনরোলমেন্ট তালিকা
+            Event Participants & Enrollments Directory
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            কোন শিক্ষার্থী কোন ইভেন্টে যুক্ত হয়েছে, তার টিকেট পাস, পেমেন্ট এবং উপস্থিতির পূর্ণ ট্র্যাকিং
+            Complete records of student enrollments, ticket passes, payment methods, and check-in statuses
           </p>
         </div>
 
@@ -226,7 +226,7 @@ export default function EventParticipantsDirectory({
             className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md shadow-emerald-600/25 transition flex items-center gap-1.5"
           >
             <Download className="w-4 h-4" />
-            CSV এক্সপোর্ট করুন
+            Export CSV
           </button>
         </div>
       </div>
@@ -239,7 +239,7 @@ export default function EventParticipantsDirectory({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="শিক্ষার্থীর নাম, আইডি, কোড বা ইভেন্ট..."
+            placeholder="Search by student name, ID, booking code, or event..."
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-pink-500"
           />
         </div>
@@ -250,7 +250,7 @@ export default function EventParticipantsDirectory({
             onChange={(e) => setSelectedEventId(e.target.value)}
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-700 dark:text-slate-300 font-semibold focus:outline-none focus:border-pink-500"
           >
-            <option value="all">সকল ইভেন্ট (All Events)</option>
+            <option value="all">All Events</option>
             {events.map((evt) => (
               <option key={evt._id} value={evt._id}>
                 {evt.title}
@@ -265,7 +265,7 @@ export default function EventParticipantsDirectory({
             onChange={(e) => setStatusFilter(e.target.value)}
             className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-700 dark:text-slate-300 font-semibold focus:outline-none focus:border-pink-500"
           >
-            <option value="all">সকল স্ট্যাটাস (All Status)</option>
+            <option value="all">All Statuses</option>
             <option value="registered">🟢 Registered</option>
             <option value="waitlisted">🟡 Waitlisted</option>
             <option value="cancelled">🔴 Cancelled</option>
@@ -274,7 +274,7 @@ export default function EventParticipantsDirectory({
           <button
             onClick={fetchRegistrations}
             className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition shrink-0"
-            title="রিফ্রেশ"
+            title="Refresh"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -287,14 +287,14 @@ export default function EventParticipantsDirectory({
           <table className="w-full text-left text-xs text-slate-700 dark:text-slate-300">
             <thead className="bg-slate-50 dark:bg-slate-950 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
               <tr>
-                <th className="py-3.5 px-4">রেজিস্ট্রেশন কোড</th>
-                <th className="py-3.5 px-4">ইভেন্টের নাম</th>
-                <th className="py-3.5 px-4">শিক্ষার্থী ও আইডি</th>
-                <th className="py-3.5 px-4">ডিপার্টমেন্ট ও ফোন</th>
-                <th className="py-3.5 px-4">রেজিস্ট্রেশনের তারিখ</th>
-                <th className="py-3.5 px-4">উপস্থিতি স্ট্যাটাস</th>
-                <th className="py-3.5 px-4">স্ট্যাটাস</th>
-                <th className="py-3.5 px-4 text-right">অ্যাকশন</th>
+                <th className="py-3.5 px-4">Booking Code</th>
+                <th className="py-3.5 px-4">Event Title</th>
+                <th className="py-3.5 px-4">Student & ID</th>
+                <th className="py-3.5 px-4">Department & Contact</th>
+                <th className="py-3.5 px-4">Registered Date</th>
+                <th className="py-3.5 px-4">Attendance Status</th>
+                <th className="py-3.5 px-4">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -303,14 +303,14 @@ export default function EventParticipantsDirectory({
                   <td colSpan={8} className="py-12 text-center text-slate-500">
                     <div className="flex flex-col items-center gap-2">
                       <div className="w-6 h-6 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-                      <span>পার্টিসিপ্যান্ট তালিকা লোড হচ্ছে...</span>
+                      <span>Loading participant list...</span>
                     </div>
                   </td>
                 </tr>
               ) : filteredRegistrations.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-slate-500">
-                    কোন পার্টিসিপ্যান্ট রেকর্ড পাওয়া যায়নি।
+                    No participant records found.
                   </td>
                 </tr>
               ) : (
@@ -353,20 +353,20 @@ export default function EventParticipantsDirectory({
                       {reg.attendedAt ? (
                         <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/30">
                           <CheckCircle2 className="w-3 h-3" />
-                          উপস্থিত (Checked-in)
+                          Checked In
                         </span>
                       ) : reg.status === 'registered' ? (
                         <button
                           onClick={() => handleManualCheckIn(reg)}
                           disabled={actionLoadingId === reg._id}
                           className="inline-flex items-center gap-1 text-[10px] font-bold text-purple-600 dark:text-purple-400 bg-purple-500/10 hover:bg-purple-500/20 px-2.5 py-1 rounded-full border border-purple-500/30 transition"
-                          title="ম্যানুয়ালি হাজিরা নিশ্চিত করুন"
+                          title="Verify attendance manually"
                         >
                           <Clock className="w-3 h-3" />
-                          হাজিরা দিন
+                          Check In
                         </button>
                       ) : (
-                        <span className="text-[10px] text-slate-400 dark:text-slate-500">অনুপস্থিত</span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500">Absent</span>
                       )}
                     </td>
 
@@ -392,13 +392,13 @@ export default function EventParticipantsDirectory({
                           onClick={() => handleCancelRegistration(reg)}
                           disabled={actionLoadingId === reg._id}
                           className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/30 transition inline-flex items-center gap-1 text-[10px] font-bold"
-                          title="রেজিস্ট্রেশন বাতিল করুন"
+                          title="Cancel Registration"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
-                          <span>বাতিল</span>
+                          <span>Cancel</span>
                         </button>
                       ) : (
-                        <span className="text-[10px] text-slate-400 dark:text-slate-600">বাতিলকৃত</span>
+                        <span className="text-[10px] text-slate-400 dark:text-slate-600">Cancelled</span>
                       )}
                     </td>
                   </tr>

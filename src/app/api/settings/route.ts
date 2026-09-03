@@ -4,32 +4,39 @@ import { SiteSettings, AuditLog } from '@/lib/models';
 import { getUserFromRequest } from '@/lib/auth';
 
 const defaultSettings = {
-  logoText: 'আমার অনুষ্ঠান.',
+  logoText: 'CampusEvents.',
   logoTagline: 'University Event Hub',
   logoIcon: 'Sparkles',
   logoImageUrl: '',
   colorTheme: 'pink-purple',
 
-  navHomeText: 'হোম',
-  navEventsText: 'ইভেন্ট সমূহ',
-  navMomentsText: 'স্মৃতি গ্যালারি',
-  navClubsText: 'ক্লাব সমূহ',
-  navEnrolledText: 'এনরোল্ড সদস্য',
-  navAnalyticsText: 'অ্যানালিটিক্স',
-  loginButtonText: 'লগইন / সাইন আপ',
+  navHomeText: 'Home',
+  navEventsText: 'All Events',
+  navMomentsText: 'Moments Gallery',
+  navClubsText: 'Clubs & Socs',
+  navEnrolledText: 'Enrolled Members',
+  navAnalyticsText: 'Analytics',
+  loginButtonText: 'Login / Sign Up',
 
-  heroBadgeText: 'স্বাগতম! University Event Hub',
-  heroTitle: 'আমার অনুষ্ঠানে আপনাকে স্বাগতম',
-  heroHighlightedWord: 'স্বাগতম',
-  heroSubtitle: 'বিশ্ববিদ্যালয়ের সকল টেক ফেস্ট, সাংস্কৃতিক সন্ধ্যা, প্রতিযোগিতা, সেমিনার ও উৎসবের জন্য আধুনিক প্ল্যাটফর্ম। এখনই রেজিস্ট্রেশন করে আপনার ডিজিটাল কিউআর পাস সংগ্রহ করুন।',
-  heroPrimaryBtnText: 'ইভেন্ট এক্সপ্লোর করুন',
-  heroSecondaryBtnText: 'ক্যাম্পাস স্মৃতি দেখুন',
+  heroBadgeText: 'Welcome! University Event Hub',
+  heroTitle: 'Discover & Join Campus Events',
+  heroHighlightedWord: 'Campus Events',
+  heroSubtitle: 'The ultimate modern platform for university tech fests, cultural nights, sports tournaments, workshops, and student clubs. Register today and get your digital QR pass.',
+  heroPrimaryBtnText: 'Explore Events',
+  heroSecondaryBtnText: 'View Campus Moments',
+  heroBgType: 'video',
+  heroVideoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+  heroVideoOpacity: 75,
+  heroOverlayDarkness: 45,
+  heroVideoBlur: 0,
+  heroVideoMuted: true,
+  heroVideoLoop: true,
 
-  footerDescription: 'বিশ্ববিদ্যালয়ের সকল অনুষ্ঠান, সেমিনার, প্রতিযোগিতা ও সাংস্কৃতিক উৎসবের সমন্বিত আধুনিক প্ল্যাটফর্ম।',
-  contactAddress: 'ইউনিভার্সিটি সেন্ট্রাল ক্যাম্পাস, ঢাকা',
+  footerDescription: 'The unified modern platform for university seminars, competitions, workshops, and cultural fests.',
+  contactAddress: 'University Central Campus, Dhaka',
   contactEmail: 'events@university.edu',
   contactPhone: '+880 1712-345678',
-  copyrightText: '© 2026 আমার অনুষ্ঠান - University Student Event Management System. সর্বস্বত্ব সংরক্ষিত।',
+  copyrightText: '© 2026 CampusEvents - University Student Event Management System. All rights reserved.',
   facebookUrl: 'https://facebook.com',
   youtubeUrl: 'https://youtube.com',
   linkedinUrl: 'https://linkedin.com',
@@ -42,6 +49,27 @@ export async function GET() {
     let settings = await SiteSettings.findOne();
     if (!settings) {
       settings = await SiteSettings.create(defaultSettings);
+    } else {
+      let needsSave = false;
+      if (!settings.get('heroVideoUrl')) {
+        settings.set('heroVideoUrl', defaultSettings.heroVideoUrl);
+        needsSave = true;
+      }
+      if (!settings.get('heroBgType')) {
+        settings.set('heroBgType', defaultSettings.heroBgType);
+        needsSave = true;
+      }
+      if (settings.get('heroVideoOpacity') === undefined || settings.get('heroVideoOpacity') === null) {
+        settings.set('heroVideoOpacity', defaultSettings.heroVideoOpacity);
+        needsSave = true;
+      }
+      if (settings.get('heroOverlayDarkness') === undefined || settings.get('heroOverlayDarkness') === null) {
+        settings.set('heroOverlayDarkness', defaultSettings.heroOverlayDarkness);
+        needsSave = true;
+      }
+      if (needsSave) {
+        await settings.save();
+      }
     }
     return NextResponse.json({ success: true, data: settings });
   } catch (error: any) {
@@ -91,6 +119,13 @@ export async function PUT(request: NextRequest) {
       'heroSubtitle',
       'heroPrimaryBtnText',
       'heroSecondaryBtnText',
+      'heroBgType',
+      'heroVideoUrl',
+      'heroVideoOpacity',
+      'heroOverlayDarkness',
+      'heroVideoBlur',
+      'heroVideoMuted',
+      'heroVideoLoop',
       'footerDescription',
       'contactAddress',
       'contactEmail',
@@ -122,7 +157,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'সাইট থিম ও কন্টেন্ট সফলভাবে আপডেট করা হয়েছে!',
+      message: 'Site theme and settings updated successfully!',
       data: settings,
     });
   } catch (error: any) {

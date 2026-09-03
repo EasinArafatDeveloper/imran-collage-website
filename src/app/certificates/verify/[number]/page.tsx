@@ -36,11 +36,11 @@ export default function CertificateVerificationPage() {
       <header className="max-w-4xl mx-auto w-full flex items-center justify-between pb-6 border-b border-slate-800">
         <Link href="/" className="flex items-center gap-2 text-xs font-semibold text-pink-400 hover:underline">
           <ArrowLeft className="w-4 h-4" />
-          <span>মূল ওয়েবসাইটে ফিরে যান</span>
+          <span>Back to Home</span>
         </Link>
         <div className="text-right">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-            অফিসিয়াল সার্টিফিকেট ভেরিফিকেশন পোর্টাল
+            Official Certificate Verification Portal
           </span>
         </div>
       </header>
@@ -50,22 +50,22 @@ export default function CertificateVerificationPage() {
         {loading ? (
           <div className="glass-card p-12 text-center text-slate-400 space-y-3">
             <div className="w-10 h-10 border-2 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto" />
-            <p className="text-xs">সার্টিফিকেট যাচাই করা হচ্ছে...</p>
+            <p className="text-xs">Verifying certificate...</p>
           </div>
         ) : error || !data ? (
           <div className="glass-card p-8 sm:p-12 text-center space-y-4 border-rose-500/40">
             <div className="w-16 h-16 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto">
               <XCircle className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-bold text-white">সার্টিফিকেট পাওয়া যায়নি</h2>
+            <h2 className="text-xl font-bold text-white">Certificate Not Found</h2>
             <p className="text-xs text-rose-400 max-w-md mx-auto leading-relaxed">
-              সার্টিফিকেট নম্বর <strong>"{certNumber}"</strong> বিশ্ববিদ্যালয়ের কেন্দ্রীয় রেজিস্ট্রিতে খুঁজে পাওয়া যায়নি।
+              Certificate number <strong>"{certNumber}"</strong> was not found in the official university registry.
             </p>
             <Link
               href="/"
               className="inline-block mt-4 bg-slate-800 hover:bg-slate-700 text-white px-6 py-2.5 rounded-xl text-xs font-bold"
             >
-              হোম পেজে যান
+              Back to Home
             </Link>
           </div>
         ) : (
@@ -76,9 +76,9 @@ export default function CertificateVerificationPage() {
             <div className="flex items-center gap-3 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
               <CheckCircle2 className="w-6 h-6 shrink-0" />
               <div>
-                <h3 className="font-bold text-sm">ভেরিফায়েড আসল সার্টিফিকেট (Authentic Certificate)</h3>
+                <h3 className="font-bold text-sm">Verified Authentic Certificate</h3>
                 <p className="text-[11px] text-emerald-300">
-                  এই সার্টিফিকেটটি বিশ্ববিদ্যালয় ইভেন্ট ম্যানেজমেন্ট সিস্টেম কর্তৃক ইস্যুকৃত এবং সম্পূর্ণ বৈধ।
+                  This certificate was officially issued by the University Student Event Management System and is 100% valid.
                 </p>
               </div>
             </div>
@@ -97,7 +97,7 @@ export default function CertificateVerificationPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
                   <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                    <User className="w-3.5 h-3.5 text-pink-500" /> শিক্ষার্থীর নাম
+                    <User className="w-3.5 h-3.5 text-pink-500" /> Student Name
                   </span>
                   <p className="font-bold text-sm text-white">{data.studentName}</p>
                   <p className="font-mono text-[11px] text-pink-400">ID: {data.studentId}</p>
@@ -105,7 +105,7 @@ export default function CertificateVerificationPage() {
 
                 <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
                   <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                    <Building2 className="w-3.5 h-3.5 text-purple-500" /> ডিপার্টমেন্ট
+                    <Building2 className="w-3.5 h-3.5 text-purple-500" /> Department
                   </span>
                   <p className="font-bold text-sm text-white">{data.department}</p>
                   <p className="text-[11px] text-slate-400">{data.university}</p>
@@ -113,13 +113,13 @@ export default function CertificateVerificationPage() {
 
                 <div className="sm:col-span-2 p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1">
                   <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                    <Award className="w-3.5 h-3.5 text-amber-500" /> ইভেন্টের নাম
+                    <Award className="w-3.5 h-3.5 text-amber-500" /> Event Title
                   </span>
                   <p className="font-bold text-base text-white">{data.eventTitle}</p>
                   <p className="text-[11px] text-slate-400 flex items-center gap-2 mt-1">
-                    <span>তারিখ: {formatDate(data.eventDate)}</span>
+                    <span>Date: {formatDate(data.eventDate)}</span>
                     <span>•</span>
-                    <span>আয়োজক: {data.organizerName}</span>
+                    <span>Organizer: {data.organizerName}</span>
                   </p>
                 </div>
               </div>
@@ -128,13 +128,13 @@ export default function CertificateVerificationPage() {
             <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
               <span className="flex items-center gap-1">
                 <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                ইস্যু তারিখ: {formatDate(data.issueDate)}
+                Issued on: {formatDate(data.issueDate)}
               </span>
               <button
                 onClick={() => window.print()}
                 className="text-pink-400 hover:underline font-semibold text-xs"
               >
-                প্রিন্ট রেকর্ড
+                Print Record
               </button>
             </div>
           </div>

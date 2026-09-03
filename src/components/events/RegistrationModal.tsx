@@ -101,23 +101,23 @@ export default function RegistrationModal({
   const handleNextStep = (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      setError('ইভেন্টে রেজিস্ট্রেশন করতে অনুগ্রহ করে প্রথমে সাইন আপ বা লগইন করুন।');
+      setError('Please sign in or create an account before registering.');
       return;
     }
     if (!name.trim()) {
-      setError('অনুগ্রহ করে আপনার নাম প্রদান করুন');
+      setError('Please provide your name');
       return;
     }
     if (!email.trim()) {
-      setError('অনুগ্রহ করে ইমেইল এড্রেস প্রদান করুন');
+      setError('Please provide your email address');
       return;
     }
     if (!studentId.trim()) {
-      setError('স্টুডেন্ট আইডি / রোল প্রদান আবশ্যক');
+      setError('Student ID is required');
       return;
     }
     if (!phone.trim()) {
-      setError('মোবাইল নম্বর প্রদান আবশ্যক');
+      setError('Contact phone number is required');
       return;
     }
 
@@ -157,7 +157,7 @@ export default function RegistrationModal({
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setError(data.message || 'রেজিস্ট্রেশন সম্পন্ন করা যায়নি। আবার চেষ্টা করুন।');
+        setError(data.message || 'Registration could not be completed. Please try again.');
         setLoading(false);
         return;
       }
@@ -166,14 +166,14 @@ export default function RegistrationModal({
       onSuccess(data.data);
       onClose();
     } catch (err: any) {
-      setError(err.message || 'নেটওয়ার্ক ইরর হয়েছে।');
+      setError(err.message || 'Network error occurred.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="ইভেন্ট রেজিস্ট্রেশন ও এনরোলমেন্ট" maxWidth="2xl">
+    <Modal isOpen={isOpen} onClose={onClose} title="Event Registration & Enrollment" maxWidth="2xl">
       <div className="space-y-5 text-xs">
         {/* Header Summary */}
         <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-pink-500/10 via-purple-500/10 to-indigo-500/10 border border-pink-500/20">
@@ -191,13 +191,13 @@ export default function RegistrationModal({
             </h4>
             <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400 mt-1">
               <span>
-                রেজিস্ট্রেশন ফি:{' '}
+                Registration Fee:{' '}
                 <strong className="text-slate-900 dark:text-white">
-                  {isPaidEvent ? `৳ ${event.registrationFee}` : 'ফ্রি (Free)'}
+                  {isPaidEvent ? `৳ ${event.registrationFee}` : 'Free'}
                 </strong>
               </span>
               <span>•</span>
-              <span>আসন বাকি: {Math.max(0, event.capacity - (event.registeredCount || 0))} টি</span>
+              <span>Seats Left: {Math.max(0, event.capacity - (event.registeredCount || 0))}</span>
             </div>
           </div>
         </div>
@@ -206,7 +206,7 @@ export default function RegistrationModal({
           <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <div className="flex items-center gap-2 font-medium">
               <AlertCircle className="w-4 h-4 shrink-0" />
-              <span>ইভেন্টে রেজিস্ট্রেশন করতে প্রথমে শিক্ষার্থী একাউন্টে লগইন বা সাইন আপ করুন।</span>
+              <span>Please sign in or create an account to register for this event.</span>
             </div>
             {onOpenLoginModal && (
               <button
@@ -217,7 +217,7 @@ export default function RegistrationModal({
                 }}
                 className="bg-amber-600 hover:bg-amber-700 text-white px-3.5 py-1.5 rounded-xl font-bold text-xs shrink-0 transition"
               >
-                লগইন করুন
+                Sign In
               </button>
             )}
           </div>
@@ -237,7 +237,7 @@ export default function RegistrationModal({
               {/* Student Name */}
               <div className="space-y-1">
                 <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  শিক্ষার্থীর নাম (Student Name) <span className="text-rose-500">*</span>
+                  Student Name <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -246,7 +246,7 @@ export default function RegistrationModal({
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="আপনার পূর্ণ নাম লিখুন (e.g. Imran Hossain)"
+                    placeholder="e.g. Imran Hossain"
                     className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 transition"
                   />
                 </div>
@@ -255,7 +255,7 @@ export default function RegistrationModal({
               {/* Email */}
               <div className="space-y-1">
                 <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  ইমেইল এড্রেস (University Email) <span className="text-rose-500">*</span>
+                  University Email <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -264,7 +264,7 @@ export default function RegistrationModal({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="বিশ্ববিদ্যালয়ের ইমেইল (e.g. student@university.edu)"
+                    placeholder="e.g. student@university.edu"
                     className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 transition"
                   />
                 </div>
@@ -273,7 +273,7 @@ export default function RegistrationModal({
               {/* Student ID */}
               <div className="space-y-1">
                 <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  স্টুডেন্ট আইডি (Student ID / Roll) <span className="text-rose-500">*</span>
+                  Student ID / Roll <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <IdCard className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -282,7 +282,7 @@ export default function RegistrationModal({
                     required
                     value={studentId}
                     onChange={(e) => setStudentId(e.target.value)}
-                    placeholder="আপনার রোল বা আইডি (e.g. 2024-1-60-001)"
+                    placeholder="e.g. 2024-1-60-001"
                     className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 transition"
                   />
                 </div>
@@ -291,7 +291,7 @@ export default function RegistrationModal({
               {/* Phone */}
               <div className="space-y-1">
                 <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  মোবাইল নম্বর (Contact Phone) <span className="text-rose-500">*</span>
+                  Contact Phone <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
                   <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -300,7 +300,7 @@ export default function RegistrationModal({
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="মোবাইল নম্বর (e.g. +880 1712-345678)"
+                    placeholder="e.g. +880 1712-345678"
                     className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-pink-500 transition"
                   />
                 </div>
@@ -309,7 +309,7 @@ export default function RegistrationModal({
               {/* Department */}
               <div className="space-y-1">
                 <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                  ডিপার্টমেন্ট (Department)
+                  Department
                 </label>
                 <div className="relative">
                   <Building2 className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -331,7 +331,7 @@ export default function RegistrationModal({
               <div className="space-y-1">
                 <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                   <Shirt className="w-3.5 h-3.5 text-pink-500" />
-                  টি-শার্ট সাইজ (T-Shirt Size)
+                  T-Shirt Size
                 </label>
                 <select
                   value={tshirtSize}
@@ -354,7 +354,7 @@ export default function RegistrationModal({
                 onClick={onClose}
                 className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold transition"
               >
-                বাতিল করুন
+                Cancel
               </button>
               <button
                 type="submit"
@@ -363,13 +363,13 @@ export default function RegistrationModal({
               >
                 {isPaidEvent ? (
                   <>
-                    <span>পেমেন্ট ধাপে যান</span>
+                    <span>Proceed to Payment</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 ) : (
                   <>
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>{loading ? 'প্রসেসিং...' : 'রেজিস্ট্রেশন নিশ্চিত করুন (ফ্রি)'}</span>
+                    <span>{loading ? 'Processing...' : 'Confirm Registration (Free)'}</span>
                   </>
                 )}
               </button>
@@ -382,7 +382,7 @@ export default function RegistrationModal({
           <div className="space-y-4 animate-fade-in">
             <div className="p-4 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-slate-700 dark:text-slate-300">প্রদেয় ফি:</span>
+                <span className="font-bold text-slate-700 dark:text-slate-300">Total Payable Fee:</span>
                 <span className="text-base font-extrabold text-pink-600 dark:text-pink-400">
                   ৳ {event.registrationFee}
                 </span>
@@ -414,10 +414,10 @@ export default function RegistrationModal({
               {/* Simulation Instructions */}
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-600 dark:text-slate-400 space-y-1">
                 <p>
-                  ১. আপনার {paymentMethod} একাউন্ট থেকে <strong>Send Money / Payment</strong> করুন:{' '}
+                  1. Send <strong>Send Money / Payment</strong> from your {paymentMethod} account to:{' '}
                   <strong className="text-slate-900 dark:text-white font-mono">01700-123456</strong>
                 </p>
-                <p>২. ট্রানজেকশন আইডি (TrxID) নিচে প্রদান করুন অথবা ফাঁকা রেখে সিমুলেট করুন:</p>
+                <p>2. Enter the Transaction ID (TrxID) below or leave blank to auto-simulate:</p>
               </div>
 
               {/* TrxID Input */}
@@ -429,7 +429,7 @@ export default function RegistrationModal({
                   type="text"
                   value={trxId}
                   onChange={(e) => setTrxId(e.target.value)}
-                  placeholder="e.g. 9J8A7K6L5M (ফাঁকা রাখলে অটো জেনারেট হবে)"
+                  placeholder="e.g. 9J8A7K6L5M (Leave empty for auto simulation)"
                   className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:border-pink-500"
                 />
               </div>
@@ -442,7 +442,7 @@ export default function RegistrationModal({
                 onClick={() => setStep('details')}
                 className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold transition"
               >
-                ← ফিরে যান
+                ← Back
               </button>
               <button
                 type="button"
@@ -451,7 +451,7 @@ export default function RegistrationModal({
                 className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 text-white font-bold shadow-lg shadow-pink-500/25 transition flex items-center gap-2 disabled:opacity-50"
               >
                 <CreditCard className="w-4 h-4" />
-                <span>{loading ? 'পেমেন্ট ভেরিফাই হচ্ছে...' : 'পেমেন্ট ও এনরোল নিশ্চিত করুন'}</span>
+                <span>{loading ? 'Verifying payment...' : 'Confirm Payment & Enroll'}</span>
               </button>
             </div>
           </div>

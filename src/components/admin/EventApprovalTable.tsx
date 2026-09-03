@@ -25,13 +25,13 @@ export default function EventApprovalTable({
     switch (status) {
       case 'published':
       case 'approved':
-        return <span className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold">● প্রকাশিত (Published)</span>;
+        return <span className="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold">● Published</span>;
       case 'pending_approval':
-        return <span className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold animate-pulse">⏳ অপেক্ষমান (Pending)</span>;
+        return <span className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold animate-pulse">⏳ Pending Approval</span>;
       case 'rejected':
-        return <span className="bg-rose-500/10 text-rose-500 border border-rose-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold">❌ প্রত্যাখ্যাত (Rejected)</span>;
+        return <span className="bg-rose-500/10 text-rose-500 border border-rose-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold">❌ Rejected</span>;
       case 'cancelled':
-        return <span className="bg-slate-500/10 text-slate-400 border border-slate-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold">🚫 বাতিল (Cancelled)</span>;
+        return <span className="bg-slate-500/10 text-slate-400 border border-slate-500/20 px-2.5 py-1 rounded-full text-[10px] font-bold">🚫 Cancelled</span>;
       default:
         return <span className="bg-slate-500/10 text-slate-400 px-2 py-0.5 rounded text-[10px]">{status}</span>;
     }
@@ -43,12 +43,12 @@ export default function EventApprovalTable({
         <table className="w-full text-left text-xs">
           <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 uppercase font-semibold border-b border-slate-200 dark:border-slate-800">
             <tr>
-              <th className="p-4">ইভেন্ট ও আয়োজক</th>
-              <th className="p-4">ক্যাটাগরি</th>
-              <th className="p-4">তারিখ ও ভেন্যু</th>
-              <th className="p-4">আসন ও ফি</th>
-              <th className="p-4">স্ট্যাটাস</th>
-              <th className="p-4 text-right">অ্যাকশন</th>
+              <th className="p-4">Event & Organizer</th>
+              <th className="p-4">Category</th>
+              <th className="p-4">Date & Venue</th>
+              <th className="p-4">Capacity & Fee</th>
+              <th className="p-4">Status</th>
+              <th className="p-4 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
@@ -85,7 +85,7 @@ export default function EventApprovalTable({
                     <button
                       onClick={() => onViewEvent(evt)}
                       className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-pink-500"
-                      title="ভিউ ডিটেইলস"
+                      title="View Details"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
@@ -97,14 +97,14 @@ export default function EventApprovalTable({
                           className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] shadow-sm flex items-center gap-1"
                         >
                           <CheckCircle2 className="w-3.5 h-3.5" />
-                          অনুমোদন
+                          Approve
                         </button>
                         <button
                           onClick={() => setRejectingId(evt._id)}
                           className="px-2.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] shadow-sm flex items-center gap-1"
                         >
                           <XCircle className="w-3.5 h-3.5" />
-                          বাতিল
+                          Reject
                         </button>
                       </>
                     )}
@@ -114,7 +114,7 @@ export default function EventApprovalTable({
                         onClick={() => onStatusChange(evt._id, 'cancelled')}
                         className="px-2 py-1 rounded-lg border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 text-[10px] font-semibold"
                       >
-                        ক্যান্সেল
+                        Cancel Event
                       </button>
                     )}
 
@@ -139,11 +139,11 @@ export default function EventApprovalTable({
       {rejectingId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-            <h3 className="font-bold text-base text-slate-900 dark:text-white">ইভেন্ট বাতিলের কারণ উল্লেখ করুন</h3>
+            <h3 className="font-bold text-base text-slate-900 dark:text-white">Provide Reason for Event Rejection</h3>
             <textarea
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
-              placeholder="যেমন: তারিখের সাংঘর্ষিকতা বা অপর্যাপ্ত নিরাপত্তা পরিকল্পনা..."
+              placeholder="e.g. Scheduling conflict or insufficient safety plan..."
               rows={3}
               className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs focus:outline-none focus:border-pink-500"
             />
@@ -152,7 +152,7 @@ export default function EventApprovalTable({
                 onClick={() => setRejectingId(null)}
                 className="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-800"
               >
-                ফিরে যান
+                Go Back
               </button>
               <button
                 onClick={() => {
@@ -162,7 +162,7 @@ export default function EventApprovalTable({
                 }}
                 className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white"
               >
-                বাতিল নিশ্চিত করুন
+                Confirm Rejection
               </button>
             </div>
           </div>

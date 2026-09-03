@@ -42,7 +42,7 @@ export default function EventFilters({
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="ইভেন্টের নাম, স্পিকার, ডিপার্টমেন্ট বা ভেন্যু খুঁজুন..."
+            placeholder="Search events by title, speaker, department or venue..."
             className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl pl-10 pr-4 py-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-pink-500 shadow-sm transition"
           />
           {search && (
@@ -50,23 +50,23 @@ export default function EventFilters({
               onClick={() => setSearch('')}
               className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             >
-              মুছুন
+              Clear
             </button>
           )}
         </div>
 
         {/* Quick Sort Dropdown */}
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">সাজান:</span>
+          <span className="text-xs text-slate-500 dark:text-slate-400 hidden sm:inline">Sort:</span>
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl px-3.5 py-3 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-pink-500 shadow-sm transition"
           >
-            <option value="upcoming">আসন্ন ইভেন্ট (Upcoming)</option>
-            <option value="popular">সর্বাধিক জনপ্রিয় (Most Popular)</option>
-            <option value="newest">নতুন যুক্ত হওয়া (Newest)</option>
-            <option value="deadline">রেজিস্ট্রেশন ডেডলাইন</option>
+            <option value="upcoming">Upcoming Events</option>
+            <option value="popular">Most Popular</option>
+            <option value="newest">Newest Added</option>
+            <option value="deadline">Registration Deadline</option>
           </select>
         </div>
       </div>
@@ -81,7 +81,7 @@ export default function EventFilters({
               : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-pink-500/40'
           }`}
         >
-          সব ইভেন্ট ({totalCount})
+          All Events ({totalCount})
         </button>
         {seedCategories.map((cat) => (
           <button
@@ -107,7 +107,7 @@ export default function EventFilters({
             onChange={(e) => setSelectedDepartment(e.target.value)}
             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-pink-500"
           >
-            <option value="all">সকল ডিপার্টমেন্ট (All Depts)</option>
+            <option value="all">All Departments</option>
             {seedDepartments.map((d) => (
               <option key={d} value={d}>
                 {d}
@@ -121,9 +121,9 @@ export default function EventFilters({
             onChange={(e) => setSelectedFee(e.target.value)}
             className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:border-pink-500"
           >
-            <option value="all">সকল ফি (Free & Paid)</option>
-            <option value="free">শুধুমাত্র ফ্রি ইভেন্ট</option>
-            <option value="paid">পেইড ইভেন্ট</option>
+            <option value="all">All Fees (Free & Paid)</option>
+            <option value="free">Free Events Only</option>
+            <option value="paid">Paid Events</option>
           </select>
         </div>
 
@@ -137,7 +137,7 @@ export default function EventFilters({
             }}
             className="text-pink-600 dark:text-pink-400 hover:underline font-semibold text-xs"
           >
-            ফিল্টার রিসেট করুন
+            Reset Filters
           </button>
         )}
       </div>

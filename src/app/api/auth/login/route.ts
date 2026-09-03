@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
 
     if (!identifier || !password) {
       return NextResponse.json(
-        { success: false, message: 'আইডি/ইমেইল এবং পাসওয়ার্ড আবশ্যক (Email/ID and password are required)' },
+        { success: false, message: 'Email/ID and password are required' },
         { status: 400 }
       );
     }
@@ -59,14 +59,14 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { success: false, message: 'সঠিক ইউজার পাওয়া যায়নি। আইডি বা ইমেইল চেক করুন।' },
+        { success: false, message: 'User not found. Please check your ID or email.' },
         { status: 401 }
       );
     }
 
     if (user.status === 'suspended') {
       return NextResponse.json(
-        { success: false, message: 'আপনার একাউন্টটি সাময়িকভাবে স্থগিত রয়েছে। এডমিনের সাথে যোগাযোগ করুন।' },
+        { success: false, message: 'Your account is currently suspended. Please contact the administrator.' },
         { status: 403 }
       );
     }
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
 
     if (!isMatch && !isDevAdminBypass) {
       return NextResponse.json(
-        { success: false, message: 'ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।' },
+        { success: false, message: 'Invalid password. Please try again.' },
         { status: 401 }
       );
     }
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json({
       success: true,
-      message: user.role === 'admin' ? 'এডমিন হিসেবে সফলভাবে লগইন হয়েছে!' : 'সফলভাবে লগইন হয়েছে!',
+      message: user.role === 'admin' ? 'Logged in successfully as Administrator!' : 'Logged in successfully!',
       token,
       user: {
         _id: user._id.toString(),
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
   } catch (error: any) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { success: false, message: 'লগইনে সার্ভার সমস্যা হয়েছে। আবার চেষ্টা করুন।', error: error.message },
+      { success: false, message: 'A server error occurred during login. Please try again.', error: error.message },
       { status: 500 }
     );
   }

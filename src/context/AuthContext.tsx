@@ -69,9 +69,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(data.user);
         return { success: true, user: data.user, message: data.message };
       }
-      return { success: false, message: data.message || 'ইমেইল বা পাসওয়ার্ড সঠিক নয়' };
+      return { success: false, message: data.message || 'Invalid email or password' };
     } catch (e: any) {
-      return { success: false, message: e.message || 'নেটওয়ার্ক সংযোগে সমস্যা' };
+      return { success: false, message: e.message || 'Network connection issue' };
     }
   };
 
@@ -87,9 +87,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(data.user);
         return { success: true, user: data.user, message: data.message };
       }
-      return { success: false, message: data.message || 'রেজিস্ট্রেশন সম্পন্ন করা সম্ভব হয়নি' };
+      return { success: false, message: data.message || 'Failed to complete registration' };
     } catch (e: any) {
-      return { success: false, message: e.message || 'নেটওয়ার্ক সংযোগে সমস্যা' };
+      return { success: false, message: e.message || 'Network connection issue' };
     }
   };
 

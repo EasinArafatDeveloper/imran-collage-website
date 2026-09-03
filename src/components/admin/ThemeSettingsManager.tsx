@@ -25,7 +25,12 @@ import {
   Calendar,
   Award,
   Flame,
-  Star
+  Star,
+  Video,
+  Film,
+  Upload,
+  Sliders,
+  Layers
 } from 'lucide-react';
 
 interface ThemeSettingsManagerProps {
@@ -60,24 +65,24 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'success',
-          title: 'সাইট থিম ও সেটিংস সংরক্ষিত! 🎨',
-          message: 'আপনার পরিবর্তিত লোগো, শিরোনাম, হিরো সেকশন ও ফুটার তথ্য লাইভ ওয়েবসাইটে আপডেট হয়েছে।',
-          confirmText: 'চমৎকার',
+          title: 'Theme & Site Settings Saved! 🎨',
+          message: 'Your modified logo, hero video background, banners, and footer information have been updated live.',
+          confirmText: 'Great',
         });
       } else {
         onTriggerAlert && onTriggerAlert({
           isOpen: true,
           type: 'error',
-          title: 'সংরক্ষণ ব্যর্থ হয়েছে',
-          message: res.message || 'সেটিংস আপডেট করা সম্ভব হয়নি।',
+          title: 'Failed to Save',
+          message: res.message || 'Unable to update settings.',
         });
       }
     } catch (e: any) {
       onTriggerAlert && onTriggerAlert({
         isOpen: true,
         type: 'error',
-        title: 'সার্ভার ত্রুটি',
-        message: e.message || 'সেটিংস আপডেট করা সম্ভব হয়নি।',
+        title: 'Server Error',
+        message: e.message || 'Unable to update settings.',
       });
     } finally {
       setSaving(false);
@@ -88,10 +93,10 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
     onTriggerAlert && onTriggerAlert({
       isOpen: true,
       type: 'confirm',
-      title: 'ডিফল্ট সেটিংসে ফিরবেন?',
-      message: 'আপনি কি সমস্ত সাইট কাস্টমাইজেশন ও টেক্সট ডিফল্ট অবস্থায় ফিরিয়ে নিতে চান?',
-      confirmText: 'হ্যাঁ, রিসেট করুন',
-      cancelText: 'বাতিল',
+      title: 'Reset to Defaults?',
+      message: 'Are you sure you want to revert all theme customizations and text to default settings?',
+      confirmText: 'Yes, Reset',
+      cancelText: 'Cancel',
       onConfirm: () => {
         setFormData(defaultSiteSettings);
       },
@@ -99,12 +104,12 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
   };
 
   const iconOptions = [
-    { name: 'Sparkles', icon: Sparkles, label: 'ম্যাজিক স্পার্কল' },
-    { name: 'GraduationCap', icon: GraduationCap, label: 'একাডেমিক ক্যাপ' },
-    { name: 'Calendar', icon: Calendar, label: 'ইভেন্ট ক্যালেন্ডার' },
-    { name: 'Award', icon: Award, label: 'অ্যাওয়ার্ড মেডেল' },
-    { name: 'Zap', icon: Zap, label: 'পাওয়ার লাইটনিং' },
-    { name: 'Star', icon: Star, label: 'গোল্ড স্টার' },
+    { name: 'Sparkles', icon: Sparkles, label: 'Magic Sparkles' },
+    { name: 'GraduationCap', icon: GraduationCap, label: 'Academic Cap' },
+    { name: 'Calendar', icon: Calendar, label: 'Event Calendar' },
+    { name: 'Award', icon: Award, label: 'Award Medal' },
+    { name: 'Zap', icon: Zap, label: 'Lightning Bolt' },
+    { name: 'Star', icon: Star, label: 'Gold Star' },
   ];
 
   const colorThemes = [
@@ -115,6 +120,88 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
     { id: 'amber-orange', name: 'Amber & Sunset (Warm Flame)', class: 'from-amber-500 to-orange-600' },
   ];
 
+  const videoPresets = [
+    {
+      id: 'tech-stage',
+      name: 'Tech Fest & Arena Stage',
+      desc: 'Conference stage with dynamic lighting',
+      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    },
+    {
+      id: 'campus-fest',
+      name: 'Campus Event Celebration',
+      desc: 'Festival crowd and celebration moments',
+      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WeAreGoingOnBullrun.mp4',
+    },
+    {
+      id: 'cyber-light',
+      name: 'Cyber Neon Lights',
+      desc: 'Futuristic glowing neon stage loops',
+      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+    },
+    {
+      id: 'ambient-rays',
+      name: 'Cinematic Stage Rays',
+      desc: 'Ambient light rays and subtle particle motion',
+      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+    },
+  ];
+
+  const [videoUploading, setVideoUploading] = useState(false);
+  const [videoUploadStatus, setVideoUploadStatus] = useState('');
+  const previewVideoRef = React.useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (previewVideoRef.current) {
+      previewVideoRef.current.muted = true;
+      previewVideoRef.current.play().catch(() => {});
+    }
+  }, [formData.heroVideoUrl, formData.heroBgType]);
+
+  const handleVideoFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 50 * 1024 * 1024) {
+      alert('Video file size must be less than 50MB.');
+      return;
+    }
+
+    setVideoUploading(true);
+    setVideoUploadStatus('Uploading video...');
+
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: uploadFormData,
+      });
+
+      const data = await res.json();
+      if (data.success && data.url) {
+        const updated = {
+          ...formData,
+          heroVideoUrl: data.url,
+          heroBgType: 'video',
+          heroVideoOpacity: formData.heroVideoOpacity ?? 75,
+          heroOverlayDarkness: formData.heroOverlayDarkness ?? 40,
+        };
+        setFormData(updated);
+        setVideoUploadStatus('✓ Video upload successful!');
+      } else {
+        alert(data.message || 'Video upload failed');
+        setVideoUploadStatus('');
+      }
+    } catch (err: any) {
+      alert('Error uploading video: ' + err.message);
+      setVideoUploadStatus('');
+    } finally {
+      setVideoUploading(false);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Top Banner */}
@@ -122,10 +209,10 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Palette className="w-5 h-5 text-pink-500" />
-            সাইট থিম, লোগো ও হোমপেজ কন্টেন্ট কন্ট্রোল
+            Theme, Logo & Homepage Content Control
           </h2>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            হোম পেজের লোগো, ট্যাগলাইন, হিরো সেকশন টেক্সট, বাটন ও ফুটার সরাসরি এডমিন প্যানেল থেকে কাস্টমাইজ করুন
+            Customize branding, logo, tagline, video background, buttons, and footer directly from the admin panel
           </p>
         </div>
 
@@ -136,7 +223,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
             className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold transition flex items-center gap-1.5"
           >
             <RefreshCw className="w-3.5 h-3.5" />
-            <span>ডিফল্ট রিসেট</span>
+            <span>Reset Defaults</span>
           </button>
 
           <button
@@ -146,7 +233,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
             className="bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-600 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-lg shadow-pink-500/25 transition flex items-center gap-2 disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
-            <span>{saving ? 'সংরক্ষণ হচ্ছে...' : 'পরিবর্তন সংরক্ষণ করুন'}</span>
+            <span>{saving ? 'Saving...' : 'Save Settings'}</span>
           </button>
         </div>
       </div>
@@ -162,7 +249,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
           }`}
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span>লোগো ও ব্র্যান্ডিং</span>
+          <span>Logo & Branding</span>
         </button>
 
         <button
@@ -174,7 +261,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
           }`}
         >
           <Layout className="w-3.5 h-3.5" />
-          <span>হিরো সেকশন কন্টেন্ট</span>
+          <span>Hero Section Content</span>
         </button>
 
         <button
@@ -186,7 +273,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
           }`}
         >
           <Compass className="w-3.5 h-3.5" />
-          <span>ন্যাভবার ও বাটন টেক্সট</span>
+          <span>Navbar & Buttons</span>
         </button>
 
         <button
@@ -198,7 +285,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
           }`}
         >
           <Phone className="w-3.5 h-3.5" />
-          <span>ফুটার ও যোগাযোগের তথ্য</span>
+          <span>Footer & Contact</span>
         </button>
 
         <button
@@ -210,7 +297,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
           }`}
         >
           <Palette className="w-3.5 h-3.5" />
-          <span>কালার স্কিম প্রিসেট</span>
+          <span>Color Schemes</span>
         </button>
       </div>
 
@@ -219,36 +306,36 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
         
         {/* ================= CONTROLS FORM (7 COLS) ================= */}
         <div className="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-7 shadow-sm dark:shadow-xl space-y-6">
-          <form onSubmit={handleSave} className="space-y-6">
+          <form onSubmit={handleSave} noValidate className="space-y-6">
             
             {/* 1. BRANDING & LOGO TAB */}
             {activeSubTab === 'branding' && (
               <div className="space-y-5 animate-fade-in text-xs">
                 <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
                   <Sparkles className="w-4 h-4 text-pink-500" />
-                  <span>ব্র্যান্ডিং ও লোগো সেটিংস</span>
+                  <span>Branding & Logo Configuration</span>
                 </h3>
 
                 {/* Brand Name / Title */}
                 <div className="space-y-1">
                   <label className="font-bold text-slate-700 dark:text-slate-300">
-                    ওয়েবসাইটের নাম / ব্র্যান্ড টাইটেল
+                    Website Name / Brand Title
                   </label>
                   <input
                     type="text"
                     required
                     value={formData.logoText}
                     onChange={(e) => handleChange('logoText', e.target.value)}
-                    placeholder="e.g. আমার অনুষ্ঠান."
+                    placeholder="e.g. CampusEvents."
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white font-bold focus:border-pink-500 focus:outline-none"
                   />
-                  <span className="text-[10px] text-slate-400">ন্যাভবার এবং ফুটার ব্র্যান্ডিং এ প্রদর্শিত হবে</span>
+                  <span className="text-[10px] text-slate-400">Displayed across navbar, footer, and page headings</span>
                 </div>
 
                 {/* Tagline */}
                 <div className="space-y-1">
                   <label className="font-bold text-slate-700 dark:text-slate-300">
-                    ব্র্যান্ড সাব-ট্যাগলাইন (Small Badge Text)
+                    Brand Sub-Tagline (Small Badge Text)
                   </label>
                   <input
                     type="text"
@@ -262,7 +349,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                 {/* Logo Icon Selector */}
                 <div className="space-y-2">
                   <label className="font-bold text-slate-700 dark:text-slate-300 block">
-                    লোগো আইকন নির্বাচন করুন
+                    Choose Logo Icon
                   </label>
                   <div className="grid grid-cols-3 gap-2.5">
                     {iconOptions.map((opt) => {
@@ -289,38 +376,316 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                 {/* Custom Logo Image URL */}
                 <div className="space-y-1 pt-2 border-t border-slate-100 dark:border-slate-800">
                   <label className="font-bold text-slate-700 dark:text-slate-300">
-                    কাস্টম লোগো ইমেজ ইউআরএল (ঐচ্ছিক)
+                    Custom Logo Image URL (Optional)
                   </label>
                   <input
-                    type="url"
+                    type="text"
                     value={formData.logoImageUrl || ''}
                     onChange={(e) => handleChange('logoImageUrl', e.target.value)}
                     placeholder="https://your-domain.com/logo.png"
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none font-mono"
                   />
-                  <span className="text-[10px] text-slate-400">খালি রাখলে আইকন সমৃদ্ধ ডিফল্ট লোগো ব্যবহার হবে</span>
+                  <span className="text-[10px] text-slate-400">If left empty, the dynamic icon logo will be used</span>
                 </div>
               </div>
             )}
 
             {/* 2. HERO SECTION TAB */}
             {activeSubTab === 'hero' && (
-              <div className="space-y-5 animate-fade-in text-xs">
+              <div className="space-y-6 animate-fade-in text-xs">
                 <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
                   <Layout className="w-4 h-4 text-purple-500" />
-                  <span>হোমপেজ হিরো ব্যানার টেক্সট</span>
+                  <span>Hero Text & Video Background Controls</span>
                 </h3>
 
+                {/* Background Type Selector */}
+                <div className="space-y-2">
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block">
+                    Hero Section Background Mode
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, heroBgType: 'video' }))}
+                      className={`p-3.5 rounded-2xl border transition flex items-center gap-3 text-left ${
+                        (formData.heroBgType || 'video') === 'video'
+                          ? 'bg-pink-500/10 border-pink-500 text-pink-600 dark:text-pink-400 font-bold ring-2 ring-pink-500/20'
+                          : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300'
+                      }`}
+                    >
+                      <Video className="w-5 h-5 text-pink-500 flex-shrink-0" />
+                      <div>
+                        <div className="text-xs font-bold">Video Loop Background</div>
+                        <div className="text-[10px] opacity-75">Cinematic background video with opacity controls</div>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, heroBgType: 'gradient' }))}
+                      className={`p-3.5 rounded-2xl border transition flex items-center gap-3 text-left ${
+                        formData.heroBgType === 'gradient'
+                          ? 'bg-pink-500/10 border-pink-500 text-pink-600 dark:text-pink-400 font-bold ring-2 ring-pink-500/20'
+                          : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300'
+                      }`}
+                    >
+                      <Layers className="w-5 h-5 text-purple-500 flex-shrink-0" />
+                      <div>
+                        <div className="text-xs font-bold">Color Gradient</div>
+                        <div className="text-[10px] opacity-75">Deep dark & purple glowing aesthetic gradient</div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Video Configuration Box */}
+                {(formData.heroBgType || 'video') === 'video' && (
+                  <div className="p-4.5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-purple-500/30 dark:border-purple-500/20 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <Film className="w-4 h-4 text-pink-500" />
+                        Video Source & Upload
+                      </span>
+                      <span className="text-[10px] text-pink-500 font-bold bg-pink-500/10 px-2.5 py-0.5 rounded-full">
+                        Live Looping Video
+                      </span>
+                    </div>
+
+                    {/* Video URL Input */}
+                    <div className="space-y-1">
+                      <label className="font-bold text-slate-700 dark:text-slate-300">
+                        Video URL (Direct MP4 / WebM URL)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.heroVideoUrl || ''}
+                        onChange={(e) => handleChange('heroVideoUrl', e.target.value)}
+                        placeholder="https://example.com/background-video.mp4"
+                        className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none font-mono"
+                      />
+                      <span className="text-[10px] text-slate-400">
+                        Paste any public direct MP4/WebM video stream URL
+                      </span>
+                    </div>
+
+                    {/* Local Video Upload Option */}
+                    <div className="space-y-1.5 pt-1">
+                      <label className="font-bold text-slate-700 dark:text-slate-300 block">
+                        Or Upload Video from Computer (Local Video Upload)
+                      </label>
+                      <div className="flex flex-wrap items-center gap-3">
+                        <label
+                          className={`cursor-pointer bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-2 shadow-sm transition ${
+                            videoUploading ? 'opacity-60 pointer-events-none' : ''
+                          }`}
+                        >
+                          {videoUploading ? (
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Upload className="w-3.5 h-3.5" />
+                          )}
+                          <span>{videoUploading ? 'Uploading video...' : 'Select Video File'}</span>
+                          <input
+                            type="file"
+                            accept="video/mp4,video/webm,video/ogg,video/quicktime"
+                            className="hidden"
+                            disabled={videoUploading}
+                            onChange={handleVideoFileUpload}
+                          />
+                        </label>
+                        {videoUploadStatus && (
+                          <span
+                            className={`text-xs font-semibold px-2.5 py-1 rounded-lg flex items-center gap-1.5 ${
+                              videoUploadStatus.includes('✓')
+                                ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20'
+                                : 'text-pink-400 bg-pink-500/10'
+                            }`}
+                          >
+                            <span>{videoUploadStatus}</span>
+                          </span>
+                        )}
+                        {!videoUploadStatus && (
+                          <span className="text-[10px] text-slate-400 font-mono truncate max-w-[240px]">
+                            {formData.heroVideoUrl?.startsWith('/uploads/')
+                              ? `✓ ${formData.heroVideoUrl}`
+                              : 'MP4, WebM (Max 50MB)'}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Current Active Video Playback Box */}
+                      {formData.heroVideoUrl && (
+                        <div className="mt-3 p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+                          <div className="flex items-center justify-between text-[11px] font-bold text-slate-300">
+                            <span className="flex items-center gap-1.5 text-pink-400">
+                              <Video className="w-3.5 h-3.5" />
+                              Current Active Video Preview
+                            </span>
+                            <span className="text-[10px] font-mono text-slate-400 truncate max-w-[180px]">
+                              {formData.heroVideoUrl}
+                            </span>
+                          </div>
+                          <div className="rounded-lg overflow-hidden border border-slate-800 bg-black aspect-video max-h-40">
+                            <video
+                              key={formData.heroVideoUrl}
+                              src={formData.heroVideoUrl}
+                              controls
+                              playsInline
+                              autoPlay
+                              muted
+                              loop
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Preset HD Videos Selection */}
+                    <div className="space-y-2 pt-2 border-t border-slate-200 dark:border-slate-800/80">
+                      <label className="font-bold text-slate-700 dark:text-slate-300 block">
+                        Quick 1-Click HD Preset Video Selection
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {videoPresets.map((preset) => {
+                          const isSelected = formData.heroVideoUrl === preset.url;
+                          return (
+                            <div
+                              key={preset.id}
+                              onClick={() => {
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  heroVideoUrl: preset.url,
+                                  heroBgType: 'video',
+                                }));
+                              }}
+                              className={`p-2.5 rounded-xl border cursor-pointer transition flex items-center justify-between ${
+                                isSelected
+                                  ? 'bg-pink-500/15 border-pink-500 text-pink-600 dark:text-pink-400 font-bold'
+                                  : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-slate-300'
+                              }`}
+                            >
+                              <div>
+                                <div className="text-xs font-bold">{preset.name}</div>
+                                <div className="text-[10px] text-slate-400">{preset.desc}</div>
+                              </div>
+                              {isSelected && <Check className="w-4 h-4 text-pink-500 font-bold flex-shrink-0" />}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Opacity & Darkness Range Sliders */}
+                    <div className="pt-3 border-t border-slate-200 dark:border-slate-800/80 space-y-4">
+                      <div className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                        <Sliders className="w-4 h-4 text-pink-500" />
+                        <span>Video Opacity & Darkness Adjustments</span>
+                      </div>
+
+                      {/* Video Opacity Slider */}
+                      <div className="space-y-1.5 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <div className="flex items-center justify-between">
+                          <label className="font-bold text-slate-700 dark:text-slate-300">
+                            Video Opacity:
+                          </label>
+                          <span className="font-mono font-bold text-pink-500 bg-pink-500/10 px-2 py-0.5 rounded-md text-xs">
+                            {formData.heroVideoOpacity ?? 45}%
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min="10"
+                          max="100"
+                          step="5"
+                          value={formData.heroVideoOpacity ?? 45}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              heroVideoOpacity: parseInt(e.target.value, 10),
+                            }))
+                          }
+                          className="w-full accent-pink-500 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                        />
+                        <div className="flex justify-between text-[9px] text-slate-400">
+                          <span>10% (Subtle Background)</span>
+                          <span>100% (Full Brightness)</span>
+                        </div>
+                      </div>
+
+                      {/* Overlay Darkness Slider */}
+                      <div className="space-y-1.5 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <div className="flex items-center justify-between">
+                          <label className="font-bold text-slate-700 dark:text-slate-300">
+                            Overlay Darkness (Enhance Text Contrast):
+                          </label>
+                          <span className="font-mono font-bold text-purple-500 bg-purple-500/10 px-2 py-0.5 rounded-md text-xs">
+                            {formData.heroOverlayDarkness ?? 65}%
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          step="5"
+                          value={formData.heroOverlayDarkness ?? 65}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              heroOverlayDarkness: parseInt(e.target.value, 10),
+                            }))
+                          }
+                          className="w-full accent-purple-500 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                        />
+                        <div className="flex justify-between text-[9px] text-slate-400">
+                          <span>0% (No Darkening)</span>
+                          <span>100% (Deep Contrast)</span>
+                        </div>
+                      </div>
+
+                      {/* Video Blur Slider */}
+                      <div className="space-y-1.5 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                        <div className="flex items-center justify-between">
+                          <label className="font-bold text-slate-700 dark:text-slate-300">
+                            Video Blur Effect (Background Soft Blur):
+                          </label>
+                          <span className="font-mono font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-md text-xs">
+                            {formData.heroVideoBlur ?? 0}px
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min="0"
+                          max="10"
+                          step="1"
+                          value={formData.heroVideoBlur ?? 0}
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              heroVideoBlur: parseInt(e.target.value, 10),
+                            }))
+                          }
+                          className="w-full accent-emerald-500 cursor-pointer h-2 bg-slate-200 dark:bg-slate-800 rounded-lg"
+                        />
+                        <div className="flex justify-between text-[9px] text-slate-400">
+                          <span>0px (Sharp Crystal Clear)</span>
+                          <span>10px (Soft Cinematic Blur)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Hero Badge Tagline */}
-                <div className="space-y-1">
+                <div className="space-y-1 pt-2 border-t border-slate-100 dark:border-slate-800">
                   <label className="font-bold text-slate-700 dark:text-slate-300">
-                    হিরো টপ ব্যাজ টেক্সট
+                    Hero Top Badge Text
                   </label>
                   <input
                     type="text"
                     value={formData.heroBadgeText}
                     onChange={(e) => handleChange('heroBadgeText', e.target.value)}
-                    placeholder="e.g. স্বাগতম! University Event Hub"
+                    placeholder="e.g. Welcome to University Event Hub"
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none font-bold"
                   />
                 </div>
@@ -328,14 +693,14 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                 {/* Main Hero Title */}
                 <div className="space-y-1">
                   <label className="font-bold text-slate-700 dark:text-slate-300">
-                    হিরো প্রধান শিরোনাম (Main Heading)
+                    Hero Main Heading Title
                   </label>
                   <input
                     type="text"
                     required
                     value={formData.heroTitle}
                     onChange={(e) => handleChange('heroTitle', e.target.value)}
-                    placeholder="e.g. আমার অনুষ্ঠানে আপনাকে স্বাগতম"
+                    placeholder="e.g. Welcome to Campus Events Hub"
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white font-bold focus:border-pink-500 focus:outline-none"
                   />
                 </div>
@@ -343,28 +708,28 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                 {/* Highlighted Word */}
                 <div className="space-y-1">
                   <label className="font-bold text-slate-700 dark:text-slate-300">
-                    গ্রেডিয়েন্ট রঙিন হাইলাইট শব্দ
+                    Gradient Highlighted Word
                   </label>
                   <input
                     type="text"
                     value={formData.heroHighlightedWord}
                     onChange={(e) => handleChange('heroHighlightedWord', e.target.value)}
-                    placeholder="e.g. স্বাগতম"
+                    placeholder="e.g. Welcome"
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-pink-500 font-bold focus:border-pink-500 focus:outline-none"
                   />
-                  <span className="text-[10px] text-slate-400">যে শব্দটি শিরোনামে রঙিন গ্রেডিয়েন্টে চমকাবে</span>
+                  <span className="text-[10px] text-slate-400">The specific word in the heading that glows with dynamic gradient</span>
                 </div>
 
                 {/* Hero Subtitle / Description */}
                 <div className="space-y-1">
                   <label className="font-bold text-slate-700 dark:text-slate-300">
-                    হিরো সাবটাইটেল / বর্ণনা
+                    Hero Subtitle & Description
                   </label>
                   <textarea
                     rows={3}
                     value={formData.heroSubtitle}
                     onChange={(e) => handleChange('heroSubtitle', e.target.value)}
-                    placeholder="বিশ্ববিদ্যালয়ের সকল টেক ফেস্ট..."
+                    placeholder="Explore and participate in hackathons, workshops, cultural galas..."
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none leading-relaxed"
                   />
                 </div>
@@ -373,26 +738,26 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100 dark:border-slate-800">
                   <div className="space-y-1">
                     <label className="font-bold text-slate-700 dark:text-slate-300">
-                      প্রধান বাটন টেক্সট (Primary Button)
+                      Primary Button Text
                     </label>
                     <input
                       type="text"
                       value={formData.heroPrimaryBtnText}
                       onChange={(e) => handleChange('heroPrimaryBtnText', e.target.value)}
-                      placeholder="e.g. ইভেন্ট এক্সপ্লোর করুন"
+                      placeholder="e.g. Explore Events"
                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none"
                     />
                   </div>
 
                   <div className="space-y-1">
                     <label className="font-bold text-slate-700 dark:text-slate-300">
-                      দ্বিতীয় বাটন টেক্সট (Secondary Button)
+                      Secondary Button Text
                     </label>
                     <input
                       type="text"
                       value={formData.heroSecondaryBtnText}
                       onChange={(e) => handleChange('heroSecondaryBtnText', e.target.value)}
-                      placeholder="e.g. ক্যাম্পাস স্মৃতি দেখুন"
+                      placeholder="e.g. Moments Gallery"
                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2.5 text-xs text-slate-900 dark:text-white focus:border-pink-500 focus:outline-none"
                     />
                   </div>
@@ -405,12 +770,12 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
               <div className="space-y-5 animate-fade-in text-xs">
                 <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
                   <Compass className="w-4 h-4 text-emerald-500" />
-                  <span>ন্যাভবার মেনু ও বাটন টেক্সট কাস্টমাইজেশন</span>
+                  <span>Navbar Menu & Action Buttons Customization</span>
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700 dark:text-slate-300">১. হোম ট্যাব টেক্সট</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">1. Home Tab Text</label>
                     <input
                       type="text"
                       value={formData.navHomeText}
@@ -420,7 +785,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700 dark:text-slate-300">২. ইভেন্ট ট্যাব টেক্সট</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">2. Events Tab Text</label>
                     <input
                       type="text"
                       value={formData.navEventsText}
@@ -430,7 +795,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700 dark:text-slate-300">৩. স্মৃতি গ্যালারি ট্যাব</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">3. Moments Gallery Tab Text</label>
                     <input
                       type="text"
                       value={formData.navMomentsText}
@@ -440,7 +805,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700 dark:text-slate-300">৪. ক্লাব সমূহ ট্যাব</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">4. Clubs Tab Text</label>
                     <input
                       type="text"
                       value={formData.navClubsText}
@@ -450,7 +815,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700 dark:text-slate-300">৫. এনরোল্ড সদস্য ট্যাব</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">5. Registered Students Tab Text</label>
                     <input
                       type="text"
                       value={formData.navEnrolledText}
@@ -460,7 +825,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700 dark:text-slate-300">৬. অ্যানালিটিক্স ট্যাব</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">6. Analytics Tab Text</label>
                     <input
                       type="text"
                       value={formData.navAnalyticsText}
@@ -472,13 +837,13 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
 
                 <div className="space-y-1 pt-3 border-t border-slate-100 dark:border-slate-800">
                   <label className="font-bold text-slate-700 dark:text-slate-300">
-                    লগইন / সাইন আপ বাটন টেক্সট
+                    Login / Sign In Button Text
                   </label>
                   <input
                     type="text"
                     value={formData.loginButtonText}
                     onChange={(e) => handleChange('loginButtonText', e.target.value)}
-                    placeholder="e.g. লগইন / সাইন আপ"
+                    placeholder="e.g. Sign In"
                     className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 dark:text-white font-bold focus:border-pink-500"
                   />
                 </div>
@@ -490,11 +855,11 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
               <div className="space-y-5 animate-fade-in text-xs">
                 <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
                   <Phone className="w-4 h-4 text-indigo-500" />
-                  <span>ফুটার ও যোগাযোগের তথ্য</span>
+                  <span>Footer & Contact Details</span>
                 </h3>
 
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-700 dark:text-slate-300">ফুটার সংক্ষিপ্ত বিবরণ</label>
+                  <label className="font-bold text-slate-700 dark:text-slate-300">Footer Short Description</label>
                   <textarea
                     rows={2}
                     value={formData.footerDescription}
@@ -505,7 +870,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700 dark:text-slate-300">ক্যাম্পাস ঠিকানা (Address)</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">Campus Address</label>
                     <input
                       type="text"
                       value={formData.contactAddress}
@@ -515,7 +880,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700 dark:text-slate-300">অফিসিয়াল ইমেইল (Support Email)</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">Official Support Email</label>
                     <input
                       type="email"
                       value={formData.contactEmail}
@@ -525,7 +890,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700 dark:text-slate-300">যোগাযোগ নম্বর (Phone)</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">Contact Phone Number</label>
                     <input
                       type="text"
                       value={formData.contactPhone}
@@ -535,7 +900,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                   </div>
 
                   <div className="space-y-1">
-                    <label className="font-bold text-slate-700 dark:text-slate-300">কপিরাইট নোটিশ (Copyright)</label>
+                    <label className="font-bold text-slate-700 dark:text-slate-300">Copyright Notice</label>
                     <input
                       type="text"
                       value={formData.copyrightText}
@@ -546,24 +911,24 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                 </div>
 
                 <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                  <label className="font-bold text-slate-700 dark:text-slate-300 block">সোশ্যাল মিডিয়া লিংকসমূহ</label>
+                  <label className="font-bold text-slate-700 dark:text-slate-300 block">Social Media Links</label>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <input
-                      type="url"
+                      type="text"
                       value={formData.facebookUrl || ''}
                       onChange={(e) => handleChange('facebookUrl', e.target.value)}
                       placeholder="Facebook URL"
                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-pink-500 font-mono"
                     />
                     <input
-                      type="url"
+                      type="text"
                       value={formData.youtubeUrl || ''}
                       onChange={(e) => handleChange('youtubeUrl', e.target.value)}
                       placeholder="YouTube URL"
                       className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-pink-500 font-mono"
                     />
                     <input
-                      type="url"
+                      type="text"
                       value={formData.linkedinUrl || ''}
                       onChange={(e) => handleChange('linkedinUrl', e.target.value)}
                       placeholder="LinkedIn URL"
@@ -579,7 +944,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
               <div className="space-y-5 animate-fade-in text-xs">
                 <h3 className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
                   <Palette className="w-4 h-4 text-cyan-500" />
-                  <span>কালার স্কিম ও গ্রেডিয়েন্ট প্রিসেট</span>
+                  <span>Color Schemes & Gradient Presets</span>
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -614,7 +979,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                 onClick={handleResetDefaults}
                 className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold transition"
               >
-                রিসেট
+                Reset
               </button>
 
               <button
@@ -623,7 +988,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
                 className="bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-600 text-white font-bold text-xs px-7 py-2.5 rounded-xl shadow-lg shadow-pink-500/25 transition flex items-center gap-2 disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
-                <span>{saving ? 'সংরক্ষণ হচ্ছে...' : 'সেটিংস সেভ করুন'}</span>
+                <span>{saving ? 'Saving...' : 'Save Settings'}</span>
               </button>
             </div>
           </form>
@@ -635,7 +1000,7 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <span className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                 <Eye className="w-4 h-4 text-pink-500" />
-                লাইভ প্রিভিউ (Live Preview)
+                Live Preview
               </span>
               <span className="text-[10px] bg-pink-500/10 text-pink-600 dark:text-pink-400 font-bold px-2 py-0.5 rounded-full">
                 Interactive
@@ -675,26 +1040,63 @@ export default function ThemeSettingsManager({ onTriggerAlert }: ThemeSettingsMa
             </div>
 
             {/* Mini Hero Banner Preview */}
-            <div className="relative rounded-2xl bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 p-4 text-white space-y-2.5 overflow-hidden shadow-lg border border-purple-500/30">
-              <span className="inline-block text-[9px] font-bold text-pink-400 bg-pink-500/10 px-2 py-0.5 rounded-full border border-pink-500/20">
-                {formData.heroBadgeText}
-              </span>
+            <div className="relative rounded-2xl bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900 p-5 text-white space-y-2.5 overflow-hidden shadow-xl border border-purple-500/30 min-h-[220px] flex flex-col justify-center">
+              {/* Background Video Layer */}
+              {(formData.heroBgType || 'video') === 'video' && formData.heroVideoUrl && (
+                <video
+                  ref={previewVideoRef}
+                  key={formData.heroVideoUrl}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-all duration-300"
+                  style={{
+                    opacity: (formData.heroVideoOpacity ?? 75) / 100,
+                    filter: formData.heroVideoBlur ? `blur(${formData.heroVideoBlur}px)` : undefined,
+                  }}
+                  src={formData.heroVideoUrl}
+                />
+              )}
 
-              <h4 className="text-sm sm:text-base font-extrabold leading-snug">
-                {formData.heroTitle}
-              </h4>
+              {/* Adjustable Darkness Overlay */}
+              <div
+                className="absolute inset-0 pointer-events-none bg-slate-950 transition-opacity duration-300"
+                style={{
+                  opacity: ((formData.heroOverlayDarkness ?? 65) / 100) * 0.9,
+                }}
+              />
 
-              <p className="text-[10px] text-slate-300 line-clamp-2 leading-relaxed">
-                {formData.heroSubtitle}
-              </p>
+              {/* Gradient Aesthetic Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-purple-950/40 to-slate-950/60 pointer-events-none" />
 
-              <div className="flex gap-2 pt-1">
-                <span className="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[9px] font-bold px-3 py-1 rounded-lg shadow-sm">
-                  {formData.heroPrimaryBtnText}
+              {/* Glow Orbs */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-pink-500/20 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl pointer-events-none" />
+
+              <div className="relative z-10 space-y-2 text-center">
+                <span className="inline-flex items-center gap-1 text-[9px] font-bold text-pink-400 bg-pink-500/15 px-2.5 py-0.5 rounded-full border border-pink-500/30">
+                  <Sparkles className="w-2.5 h-2.5" />
+                  {formData.heroBadgeText}
                 </span>
-                <span className="bg-white/10 text-slate-300 text-[9px] font-bold px-3 py-1 rounded-lg">
-                  {formData.heroSecondaryBtnText}
-                </span>
+
+                <h4 className="text-sm sm:text-base font-extrabold leading-snug">
+                  {formData.heroTitle}
+                </h4>
+
+                <p className="text-[10px] text-slate-300 line-clamp-2 leading-relaxed max-w-sm mx-auto">
+                  {formData.heroSubtitle}
+                </p>
+
+                <div className="flex justify-center gap-2 pt-1">
+                  <span className="bg-gradient-to-r from-pink-500 to-purple-600 text-white text-[9px] font-bold px-3 py-1 rounded-lg shadow-sm">
+                    {formData.heroPrimaryBtnText}
+                  </span>
+                  <span className="bg-slate-800/80 border border-slate-700 text-slate-300 text-[9px] font-bold px-3 py-1 rounded-lg">
+                    {formData.heroSecondaryBtnText}
+                  </span>
+                </div>
               </div>
             </div>
 
